@@ -124,6 +124,7 @@ function KycForm(): JSX.Element {
         setStatus({ type: '', message: '', summary: '' });
       }, 10000);
     } catch (err: any) {
+      console.error('Submission error:', err);
       setStatus({ 
         type: 'error', 
         message: err?.response?.data?.message || 'Failed to submit KYC. Please try again.' 

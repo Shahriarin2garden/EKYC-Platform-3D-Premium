@@ -5,9 +5,25 @@ const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config();
 
+// Global error handlers
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.error(err.name, err.message);
+  console.error(err.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.error(err.name, err.message);
+  console.error(err.stack);
+  process.exit(1);
+});
+
 const app = express();
 
 // Middleware
+// Configure CORS to allow requests from frontend
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

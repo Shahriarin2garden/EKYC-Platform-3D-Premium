@@ -9,7 +9,7 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // For cookie-based auth
+  withCredentials: false, // Disabled to avoid CORS issues with wildcard origin
 });
 
 // Request interceptor for adding auth token
