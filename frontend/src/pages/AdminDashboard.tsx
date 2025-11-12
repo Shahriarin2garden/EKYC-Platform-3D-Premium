@@ -658,9 +658,34 @@ const AdminDashboard: React.FC = () => {
               {/* AI Summary */}
               {selectedApplication.aiSummary && (
                 <div className="space-y-2">
-                  <h4 className="text-lg font-bold text-gray-900 border-b pb-2">AI Summary</h4>
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <h4 className="text-lg font-bold text-gray-900">AI Summary</h4>
+                    <button
+                      onClick={async () => {
+                        if (!globalThis.confirm('Regenerate AI summary for this application?')) return;
+                        try {
+                          const token = localStorage.getItem('token');
+                          const response = await axios.post(
+                            `http://localhost:5000/api/kyc/${selectedApplication._id}/regenerate-summary`,
+                            {},
+                            { headers: { Authorization: `Bearer ${token}` } }
+                          );
+                          if (response.data.success) {
+                            showNotification('success', 'AI summary regenerated successfully!');
+                            closeModal();
+                            await fetchData();
+                          }
+                        } catch (error: any) {
+                          showNotification('error', error.response?.data?.message || 'Failed to regenerate summary');
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-200 font-semibold shadow-md"
+                    >
+                      🔄 Regenerate
+                    </button>
+                  </div>
                   <div className="bg-gradient-to-r from-blue-50/50 to-purple-50/50 rounded-xl p-4 border border-gray-200">
-                    <p className="text-sm text-gray-700 leading-relaxed">{selectedApplication.aiSummary}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedApplication.aiSummary}</p>
                   </div>
                 </div>
               )}

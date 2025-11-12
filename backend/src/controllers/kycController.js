@@ -1,4 +1,5 @@
 const Kyc = require('../models/Kyc');
+const aiService = require('../services/aiService');
 
 // Submit KYC Application
 exports.submitKyc = async (req, res) => {
@@ -28,8 +29,16 @@ exports.submitKyc = async (req, res) => {
       occupation
     });
 
-    // Generate AI summary (placeholder - can be enhanced with actual AI)
-    kyc.aiSummary = kyc.generateSummary();
+    // Generate AI summary using OpenRouter (or fallback to basic summary)
+    console.log('🤖 Generating AI summary for KYC application...');
+    kyc.aiSummary = await aiService.generateKycSummary({
+      name,
+      email,
+      address,
+      nid,
+      occupation,
+      submittedAt: new Date()
+    });
 
     // Save to database
     await kyc.save();
@@ -258,6 +267,121 @@ exports.deleteKyc = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to delete KYC application',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// Regenerate AI Summary (for admin)
+exports.regenerateAiSummary = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const kyc = await Kyc.findById(id);
+
+    if (!kyc) {
+      return res.status(404).json({
+        success: false,
+        message: 'KYC application not found'
+      });
+    }
+
+    console.log('🔄 Regenerating AI summary for:', kyc.email);
+
+    // Generate new AI summary
+    const newSummary = await aiService.generateKycSummary({
+      name: kyc.name,
+      email: kyc.email,
+      address: kyc.address,
+      nid: kyc.nid,
+      occupation: kyc.occupation,
+      submittedAt: kyc.submittedAt
+    });
+
+    kyc.aiSummary = newSummary;
+    await kyc.save();
+
+    res.json({
+      success: true,
+      message: 'AI summary regenerated successfully',
+      data: {
+        aiSummary: newSummary
+      }
+    });
+  } catch (error) {
+    console.error('Regenerate AI summary error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to regenerate AI summary',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// Batch regenerate AI summaries (for admin)
+exports.batchRegenerateAiSummaries = async (req, res) => {
+  try {
+    const { status } = req.query;
+    
+    // Build query
+    const query = {};
+    if (status) {
+      query.status = status;
+    }
+
+    const kycs = await Kyc.find(query).limit(50); // Limit to 50 for safety
+
+    if (kycs.length === 0) {
+      return res.json({
+        success: true,
+        message: 'No applications found to process',
+        data: { processed: 0 }
+      });
+    }
+
+    console.log(`🔄 Batch regenerating AI summaries for ${kycs.length} applications...`);
+
+    let successCount = 0;
+    let failCount = 0;
+
+    // Process in batches to avoid overwhelming the API
+    for (const kyc of kycs) {
+      try {
+        const newSummary = await aiService.generateKycSummary({
+          name: kyc.name,
+          email: kyc.email,
+          address: kyc.address,
+          nid: kyc.nid,
+          occupation: kyc.occupation,
+          submittedAt: kyc.submittedAt
+        });
+
+        kyc.aiSummary = newSummary;
+        await kyc.save();
+        successCount++;
+
+        // Small delay to respect rate limits
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error(`Failed to regenerate summary for ${kyc.email}:`, error.message);
+        failCount++;
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `AI summaries regenerated: ${successCount} succeeded, ${failCount} failed`,
+      data: {
+        total: kycs.length,
+        succeeded: successCount,
+        failed: failCount
+      }
+    });
+  } catch (error) {
+    console.error('Batch regenerate AI summaries error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to batch regenerate AI summaries',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
