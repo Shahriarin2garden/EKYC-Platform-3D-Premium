@@ -2,8 +2,8 @@ const Admin = require('../models/Admin');
 const Kyc = require('../models/Kyc');
 const pdfProducer = require('../services/pdfProducer');
 const pdfService = require('../services/pdfService');
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
 
 // Register a new admin
 exports.register = async (req, res) => {
@@ -304,7 +304,7 @@ exports.generatePdf = async (req, res) => {
       });
     } catch (queueError) {
       // Fallback to synchronous PDF generation if RabbitMQ is not available
-      console.log('RabbitMQ not available, generating PDF synchronously...');
+      console.log('RabbitMQ not available, generating PDF synchronously...', queueError.message);
       
       // Generate PDF synchronously
       const pdfPath = await pdfService.generateKycPdf(kyc);
@@ -460,7 +460,7 @@ exports.batchGeneratePdf = async (req, res) => {
       });
     } catch (queueError) {
       // Fallback to synchronous PDF generation if RabbitMQ is not available
-      console.log('RabbitMQ not available, generating PDFs synchronously...');
+      console.log('RabbitMQ not available, generating PDFs synchronously...', queueError.message);
       
       const results = [];
       for (const kycId of kycIds) {
