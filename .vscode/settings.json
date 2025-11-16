@@ -1,0 +1,27 @@
+{
+  "sonarlint.rules": {
+    "javascript:S1481": {
+      "level": "on"
+    },
+    "javascript:S1854": {
+      "level": "on"
+    },
+    "javascript:S3353": {
+      "level": "on"
+    },
+    "javascript:S1186": {
+      "level": "on"
+    },
+    "typescript:S1481": {
+      "level": "on"
+    },
+    "typescript:S1854": {
+      "level": "on"
+    }
+  },
+  "sonarlint.output.showAnalyzerLogs": true,
+  "sonarlint.output.showVerboseLogs": true,
+  "sonarlint.disableTelemetry": true,
+  "sonarlint.connectedMode.connections.sonarqube": [],
+  "sonarlint.connectedMode.connections.sonarcloud": []
+}
