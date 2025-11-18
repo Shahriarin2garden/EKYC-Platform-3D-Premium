@@ -1,0 +1,26 @@
+# Development Dockerfile for Backend with hot-reload
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install nodemon globally for hot-reload
+RUN npm install -g nodemon
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Create pdfs directory
+RUN mkdir -p /app/pdfs
+
+# Expose port and debugger port
+EXPOSE 5000 9229
+
+# Start with nodemon for hot-reload
+CMD ["npm", "run", "dev"]

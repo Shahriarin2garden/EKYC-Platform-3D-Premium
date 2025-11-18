@@ -47,3 +47,14 @@ Thumbs.db
 # Documentation (temporary exclusion)
 docs/
 
+# Docker
+.docker/
+docker-compose.override.yml
+
+# PDF files
+backend/pdfs/*.pdf
+!backend/pdfs/.gitkeep
+
+# Sonar
+.scannerwork/
+

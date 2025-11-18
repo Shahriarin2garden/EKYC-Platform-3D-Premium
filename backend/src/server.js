@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const logger = require('./config/logger');
 const connectDB = require('./config/database');
 const pdfWorker = require('./services/pdfWorker');
 
@@ -9,16 +10,12 @@ dotenv.config();
 
 // Global error handlers
 process.on('uncaughtException', (err) => {
-  console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-  console.error(err.name, err.message);
-  console.error(err.stack);
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...', { error: err.name, message: err.message, stack: err.stack });
   process.exit(1);
 });
 
 process.on('unhandledRejection', (err) => {
-  console.error('UNHANDLED REJECTION! 💥');
-  console.error(err.name, err.message);
-  console.error(err.stack);
+  logger.error('UNHANDLED REJECTION! 💥', { error: err.name, message: err.message, stack: err.stack });
   // Don't exit immediately - let the app handle it
 });
 
@@ -28,7 +25,7 @@ void (async () => {
   try {
     await connectDB();
   } catch (err) {
-    console.error('Failed to connect to MongoDB:', err.message);
+    logger.error('Failed to connect to MongoDB', { error: err.message });
   }
 })();
 
@@ -39,8 +36,8 @@ void (async () => {
   try {
     await pdfWorker.startPdfWorker();
   } catch (err) {
-    console.error('Failed to start PDF Worker:', err.message);
-    console.log('PDF generation will not be available. Make sure RabbitMQ is running.');
+    logger.error('Failed to start PDF Worker', { error: err.message });
+    logger.warn('PDF generation will not be available. Make sure RabbitMQ is running.');
   }
 })();
 
@@ -76,7 +73,7 @@ app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error('Internal server error', { error: err.message, stack: err.stack, path: req.path });
   res.status(500).json({
     success: false,
     message: 'Internal server error',
@@ -95,29 +92,29 @@ app.use((req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
-  console.log(`EKYC API Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`PDF Worker: ${process.env.RABBITMQ_URL ? 'Enabled' : 'Disabled (RabbitMQ URL not configured)'}`);
+  logger.info(`EKYC API Server running on port ${PORT}`);
+  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`PDF Worker: ${process.env.RABBITMQ_URL ? 'Enabled' : 'Disabled (RabbitMQ URL not configured)'}`);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server and PDF Worker');
+  logger.info('SIGTERM signal received: closing HTTP server and PDF Worker');
   server.close(() => {
-    console.log('HTTP server closed');
+    logger.info('HTTP server closed');
     pdfWorker.stopPdfWorker().then(() => {
-      console.log('PDF Worker stopped');
+      logger.info('PDF Worker stopped');
       process.exit(0);
     });
   });
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT signal received: closing HTTP server and PDF Worker');
+  logger.info('SIGINT signal received: closing HTTP server and PDF Worker');
   server.close(() => {
-    console.log('HTTP server closed');
+    logger.info('HTTP server closed');
     pdfWorker.stopPdfWorker().then(() => {
-      console.log('PDF Worker stopped');
+      logger.info('PDF Worker stopped');
       process.exit(0);
     });
   });

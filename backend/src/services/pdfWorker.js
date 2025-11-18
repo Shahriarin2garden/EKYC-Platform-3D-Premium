@@ -1,6 +1,7 @@
 const rabbitmq = require('../config/rabbitmq');
 const pdfService = require('./pdfService');
 const Kyc = require('../models/Kyc');
+const logger = require('../config/logger');
 
 /**
  * Start the PDF generation worker
@@ -8,7 +9,7 @@ const Kyc = require('../models/Kyc');
  */
 async function startPdfWorker() {
   try {
-    console.log('Starting PDF Worker...');
+    logger.pdf('Starting PDF Worker...');
 
     // Connect to RabbitMQ
     await rabbitmq.connect();
@@ -23,10 +24,10 @@ async function startPdfWorker() {
       }
     );
 
-    console.log('PDF Worker started successfully');
-    console.log(`Listening for PDF generation requests on queue: ${rabbitmq.PDF_QUEUE}`);
+    logger.pdf('PDF Worker started successfully');
+    logger.pdf(`Listening for PDF generation requests on queue: ${rabbitmq.PDF_QUEUE}`);
   } catch (error) {
-    console.error('Failed to start PDF Worker:', error);
+    logger.error('Failed to start PDF Worker', { error: error.message });
     throw error;
   }
 }
@@ -38,15 +39,14 @@ async function startPdfWorker() {
 async function processPdfGenerationRequest(message) {
   const { kycId, requestedBy, priority } = message;
 
-  console.log(`Processing PDF generation for KYC ID: ${kycId}`);
-  console.log(`Requested by: ${requestedBy}, Priority: ${priority || 'normal'}`);
+  logger.pdf(`Processing PDF generation for KYC ID: ${kycId}`, { requestedBy, priority: priority || 'normal' });
 
   try {
     // Fetch the KYC data from database
     const kycData = await Kyc.findById(kycId).populate('reviewedBy', 'name email');
 
     if (!kycData) {
-      console.error(`KYC record not found: ${kycId}`);
+      logger.error(`KYC record not found: ${kycId}`);
       throw new Error('KYC record not found');
     }
 
@@ -54,13 +54,13 @@ async function processPdfGenerationRequest(message) {
     if (kycData.pdfPath && kycData.pdfGeneratedAt) {
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
       if (new Date(kycData.pdfGeneratedAt) > oneHourAgo) {
-        console.log(`Recent PDF already exists for KYC ${kycId}, skipping generation`);
+        logger.pdf(`Recent PDF already exists for KYC ${kycId}, skipping generation`);
         return;
       }
     }
 
     // Generate the PDF
-    console.log('Generating PDF...');
+    logger.pdf('Generating PDF...', { kycId });
     const pdfPath = await pdfService.generateKycPdf(kycData);
 
     // Update the KYC record with PDF path
@@ -68,8 +68,7 @@ async function processPdfGenerationRequest(message) {
     kycData.pdfGeneratedAt = new Date();
     await kycData.save();
 
-    console.log(`PDF generated successfully for KYC ${kycId}`);
-    console.log(`PDF saved at: ${pdfPath}`);
+    logger.pdf(`PDF generated successfully for KYC ${kycId}`, { pdfPath });
 
     return {
       success: true,
@@ -79,7 +78,7 @@ async function processPdfGenerationRequest(message) {
     };
 
   } catch (error) {
-    console.error(`Error generating PDF for KYC ${kycId}:`, error);
+    logger.error(`Error generating PDF for KYC ${kycId}`, { error: error.message });
     
     // Log the error to database (optional)
     try {
@@ -90,7 +89,7 @@ async function processPdfGenerationRequest(message) {
         await kycData.save();
       }
     } catch (dbError) {
-      console.error('Failed to log PDF error to database:', dbError);
+      logger.error('Failed to log PDF error to database', { error: dbError.message });
     }
 
     throw error;
@@ -102,11 +101,11 @@ async function processPdfGenerationRequest(message) {
  */
 async function stopPdfWorker() {
   try {
-    console.log('Stopping PDF Worker...');
+    logger.pdf('Stopping PDF Worker...');
     await rabbitmq.close();
-    console.log('PDF Worker stopped');
+    logger.pdf('PDF Worker stopped');
   } catch (error) {
-    console.error('Error stopping PDF Worker:', error);
+    logger.error('Error stopping PDF Worker', { error: error.message });
   }
 }
 
@@ -118,7 +117,7 @@ async function getWorkerStats() {
     const stats = await rabbitmq.getQueueStats(rabbitmq.PDF_QUEUE);
     return stats;
   } catch (error) {
-    console.error('Error getting worker stats:', error);
+    logger.error('Error getting worker stats', { error: error.message });
     throw error;
   }
 }

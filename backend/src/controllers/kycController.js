@@ -1,5 +1,6 @@
 const Kyc = require('../models/Kyc');
 const aiService = require('../services/aiService');
+const logger = require('../config/logger');
 
 // Submit KYC Application
 exports.submitKyc = async (req, res) => {
@@ -30,7 +31,7 @@ exports.submitKyc = async (req, res) => {
     });
 
     // Generate AI summary using OpenRouter (or fallback to basic summary)
-    console.log('🤖 Generating AI summary for KYC application...');
+    logger.ai('Generating AI summary for KYC application', { email });
     kyc.aiSummary = await aiService.generateKycSummary({
       name,
       email,
@@ -56,7 +57,7 @@ exports.submitKyc = async (req, res) => {
       summary: kyc.aiSummary
     });
   } catch (error) {
-    console.error('KYC submission error:', error);
+    logger.error('KYC submission error', { error: error.message, email: req.body.email });
 
     // Handle validation errors
     if (error.name === 'ValidationError') {
@@ -123,7 +124,7 @@ exports.getAllKyc = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get all KYC error:', error);
+    logger.error('Get all KYC error', { error: error.message });
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve KYC applications',
@@ -152,7 +153,7 @@ exports.getKycById = async (req, res) => {
       data: kyc
     });
   } catch (error) {
-    console.error('Get KYC by ID error:', error);
+    logger.error('Get KYC by ID error', { error: error.message, id: req.params.id });
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve KYC application',
@@ -205,7 +206,7 @@ exports.updateKycStatus = async (req, res) => {
       data: kyc
     });
   } catch (error) {
-    console.error('Update KYC status error:', error);
+    logger.error('Update KYC status error', { error: error.message, id: req.params.id });
     res.status(500).json({
       success: false,
       message: 'Failed to update KYC status',
@@ -235,7 +236,7 @@ exports.getKycStatistics = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get KYC statistics error:', error);
+    logger.error('Get KYC statistics error', { error: error.message });
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve KYC statistics',
@@ -263,7 +264,7 @@ exports.deleteKyc = async (req, res) => {
       message: 'KYC application deleted successfully'
     });
   } catch (error) {
-    console.error('Delete KYC error:', error);
+    logger.error('Delete KYC error', { error: error.message, id: req.params.id });
     res.status(500).json({
       success: false,
       message: 'Failed to delete KYC application',
@@ -286,7 +287,7 @@ exports.regenerateAiSummary = async (req, res) => {
       });
     }
 
-    console.log('🔄 Regenerating AI summary for:', kyc.email);
+    logger.ai('Regenerating AI summary', { email: kyc.email, kycId: id });
 
     // Generate new AI summary
     const newSummary = await aiService.generateKycSummary({
@@ -309,7 +310,7 @@ exports.regenerateAiSummary = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Regenerate AI summary error:', error);
+    logger.error('Regenerate AI summary error', { error: error.message, id: req.params.id });
     res.status(500).json({
       success: false,
       message: 'Failed to regenerate AI summary',
@@ -339,7 +340,7 @@ exports.batchRegenerateAiSummaries = async (req, res) => {
       });
     }
 
-    console.log(`🔄 Batch regenerating AI summaries for ${kycs.length} applications...`);
+    logger.ai(`Batch regenerating AI summaries for ${kycs.length} applications`);
 
     let successCount = 0;
     let failCount = 0;
@@ -363,7 +364,7 @@ exports.batchRegenerateAiSummaries = async (req, res) => {
         // Small delay to respect rate limits
         await new Promise(resolve => setTimeout(resolve, 500));
       } catch (error) {
-        console.error(`Failed to regenerate summary for ${kyc.email}:`, error.message);
+        logger.error('Failed to regenerate summary', { email: kyc.email, error: error.message });
         failCount++;
       }
     }
@@ -378,7 +379,7 @@ exports.batchRegenerateAiSummaries = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Batch regenerate AI summaries error:', error);
+    logger.error('Batch regenerate AI summaries error', { error: error.message });
     res.status(500).json({
       success: false,
       message: 'Failed to batch regenerate AI summaries',

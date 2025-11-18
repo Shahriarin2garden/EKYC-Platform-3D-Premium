@@ -4,6 +4,7 @@ const pdfProducer = require('../services/pdfProducer');
 const pdfService = require('../services/pdfService');
 const path = require('node:path');
 const fs = require('node:fs');
+const logger = require('../config/logger');
 
 // Register a new admin
 exports.register = async (req, res) => {
@@ -46,7 +47,7 @@ exports.register = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Admin registration error:', error);
+    logger.error('Admin registration error', { error: error.message, email: req.body.email });
 
     // Handle validation errors
     if (error.name === 'ValidationError') {
@@ -111,7 +112,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Admin login error:', error);
+    logger.error('Admin login error', { error: error.message, email: req.body.email });
 
     if (error.message === 'Invalid email or password') {
       return res.status(401).json({
@@ -147,7 +148,7 @@ exports.getProfile = async (req, res) => {
       data: admin
     });
   } catch (error) {
-    console.error('Get profile error:', error);
+    logger.error('Get profile error', { error: error.message, adminId: req.admin?.id });
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve profile',
@@ -184,7 +185,7 @@ exports.updateProfile = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Update profile error:', error);
+    logger.error('Update profile error', { error: error.message, adminId: req.admin?.id });
     res.status(500).json({
       success: false,
       message: 'Failed to update profile',
@@ -241,7 +242,7 @@ exports.changePassword = async (req, res) => {
       message: 'Password changed successfully'
     });
   } catch (error) {
-    console.error('Change password error:', error);
+    logger.error('Change password error', { error: error.message, adminId: req.admin?.id });
     res.status(500).json({
       success: false,
       message: 'Failed to change password',
@@ -261,7 +262,7 @@ exports.getAllAdmins = async (req, res) => {
       data: admins
     });
   } catch (error) {
-    console.error('Get all admins error:', error);
+    logger.error('Get all admins error', { error: error.message });
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve admins',
@@ -304,7 +305,7 @@ exports.generatePdf = async (req, res) => {
       });
     } catch (queueError) {
       // Fallback to synchronous PDF generation if RabbitMQ is not available
-      console.log('RabbitMQ not available, generating PDF synchronously...', queueError.message);
+      logger.warn('RabbitMQ not available, generating PDF synchronously', { error: queueError.message, kycId });
       
       // Generate PDF synchronously
       const pdfPath = await pdfService.generateKycPdf(kyc);
@@ -329,7 +330,7 @@ exports.generatePdf = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Generate PDF error:', error);
+    logger.error('Generate PDF error', { error: error.message, kycId: req.params.kycId });
     res.status(500).json({
       success: false,
       message: 'Failed to generate PDF',
@@ -376,7 +377,7 @@ exports.downloadPdf = async (req, res) => {
     fileStream.pipe(res);
 
     fileStream.on('error', (error) => {
-      console.error('Error streaming PDF:', error);
+      logger.error('Error streaming PDF', { error: error.message, kycId: req.params.kycId });
       if (!res.headersSent) {
         res.status(500).json({
           success: false,
@@ -386,7 +387,7 @@ exports.downloadPdf = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Download PDF error:', error);
+    logger.error('Download PDF error', { error: error.message, kycId: req.params.kycId });
     res.status(500).json({
       success: false,
       message: 'Failed to download PDF',
@@ -424,7 +425,7 @@ exports.getPdfStatus = async (req, res) => {
       data: status
     });
   } catch (error) {
-    console.error('Get PDF status error:', error);
+    logger.error('Get PDF status error', { error: error.message, kycId: req.params.kycId });
     res.status(500).json({
       success: false,
       message: 'Failed to get PDF status',
@@ -460,7 +461,7 @@ exports.batchGeneratePdf = async (req, res) => {
       });
     } catch (queueError) {
       // Fallback to synchronous PDF generation if RabbitMQ is not available
-      console.log('RabbitMQ not available, generating PDFs synchronously...', queueError.message);
+      logger.warn('RabbitMQ not available, generating PDFs synchronously', { error: queueError.message });
       
       const results = [];
       for (const kycId of kycIds) {
@@ -491,7 +492,7 @@ exports.batchGeneratePdf = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Batch generate PDF error:', error);
+    logger.error('Batch generate PDF error', { error: error.message });
     res.status(500).json({
       success: false,
       message: 'Failed to generate PDFs',
@@ -511,7 +512,7 @@ exports.getPdfQueueStatus = async (req, res) => {
       data: status.data
     });
   } catch (error) {
-    console.error('Get queue status error:', error);
+    logger.error('Get queue status error', { error: error.message });
     res.status(500).json({
       success: false,
       message: 'Failed to get queue status',

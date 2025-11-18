@@ -1,6 +1,7 @@
 const PDFDocument = require('pdfkit');
 const fs = require('node:fs');
 const path = require('node:path');
+const logger = require('../config/logger');
 
 // Ensure the pdfs directory exists
 const PDF_DIR = path.join(__dirname, '../../pdfs');
@@ -149,17 +150,17 @@ async function generateKycPdf(kycData) {
 
       // Wait for the stream to finish
       stream.on('finish', () => {
-        console.log(`PDF generated successfully: ${filename}`);
+        logger.pdf(`PDF generated successfully: ${filename}`);
         resolve(filePath);
       });
 
       stream.on('error', (err) => {
-        console.error('Error writing PDF:', err);
+        logger.error('Error writing PDF', { error: err.message, filename });
         reject(err);
       });
 
     } catch (error) {
-      console.error('Error generating PDF:', error);
+      logger.error('Error generating PDF', { error: error.message });
       reject(error);
     }
   });
@@ -207,12 +208,12 @@ async function deletePdf(filePath) {
   try {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
-      console.log(`PDF deleted: ${filePath}`);
+      logger.pdf(`PDF deleted: ${filePath}`);
       return true;
     }
     return false;
   } catch (error) {
-    console.error('Error deleting PDF:', error);
+    logger.error('Error deleting PDF', { error: error.message, filePath });
     throw error;
   }
 }

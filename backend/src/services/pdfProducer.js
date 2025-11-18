@@ -1,4 +1,5 @@
 const rabbitmq = require('../config/rabbitmq');
+const logger = require('../config/logger');
 
 /**
  * Request PDF generation for a KYC application
@@ -9,7 +10,7 @@ const rabbitmq = require('../config/rabbitmq');
  */
 async function requestPdfGeneration(kycId, requestedBy, priority = 5) {
   try {
-    console.log(`Requesting PDF generation for KYC ${kycId}`);
+    logger.pdf(`Requesting PDF generation for KYC ${kycId}`, { requestedBy, priority });
 
     const message = {
       kycId,
@@ -20,11 +21,11 @@ async function requestPdfGeneration(kycId, requestedBy, priority = 5) {
 
     await rabbitmq.sendToQueue(rabbitmq.PDF_QUEUE, message, { priority });
 
-    console.log(`PDF generation request sent to queue for KYC ${kycId}`);
+    logger.pdf(`PDF generation request sent to queue for KYC ${kycId}`);
     return true;
 
   } catch (error) {
-    console.error('Failed to request PDF generation:', error);
+    logger.error('Failed to request PDF generation', { error: error.message, kycId });
     throw error;
   }
 }
@@ -38,7 +39,7 @@ async function requestPdfGeneration(kycId, requestedBy, priority = 5) {
  */
 async function requestBatchPdfGeneration(kycIds, requestedBy, priority = 3) {
   try {
-    console.log(`Requesting batch PDF generation for ${kycIds.length} KYC applications`);
+    logger.pdf(`Requesting batch PDF generation for ${kycIds.length} KYC applications`, { requestedBy, priority });
 
     const results = {
       total: kycIds.length,
@@ -60,11 +61,11 @@ async function requestBatchPdfGeneration(kycIds, requestedBy, priority = 3) {
       }
     }
 
-    console.log(`Batch PDF generation: ${results.successful} successful, ${results.failed} failed`);
+    logger.pdf(`Batch PDF generation: ${results.successful} successful, ${results.failed} failed`, { results });
     return results;
 
   } catch (error) {
-    console.error('Failed to request batch PDF generation:', error);
+    logger.error('Failed to request batch PDF generation', { error: error.message });
     throw error;
   }
 }
@@ -81,7 +82,7 @@ async function getQueueStatus() {
       data: stats
     };
   } catch (error) {
-    console.error('Failed to get queue status:', error);
+    logger.error('Failed to get queue status', { error: error.message });
     throw error;
   }
 }

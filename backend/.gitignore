@@ -18,3 +18,7 @@ coverage/
 *.swo
 *~
 .cache/
+
+# Log files
+logs/
+*.log

@@ -1,4 +1,5 @@
 const { OpenRouter } = require('@openrouter/sdk');
+const logger = require('../config/logger');
 
 /**
  * AI Service for generating KYC application summaries using OpenRouter
@@ -46,7 +47,7 @@ class AIService {
   async generateKycSummary(kycData) {
     // If API key is not configured, return basic summary
     if (!this.isEnabled()) {
-      console.log('⚠️  OpenRouter API key not configured. Using basic summary.');
+      logger.warn('OpenRouter API key not configured. Using basic summary.');
       return this.generateBasicSummary(kycData);
     }
 
@@ -74,17 +75,14 @@ class AIService {
 
       const summary = response.choices[0].message.content.trim();
       
-      console.log('✅ AI summary generated successfully using:', this.model);
+      logger.ai('AI summary generated successfully', { model: this.model });
       return summary;
 
     } catch (error) {
-      console.error('❌ Error generating AI summary:', error.message);
-      if (error.response) {
-        console.error('   Response:', error.response.data || error.response);
-      }
+      logger.error('Error generating AI summary', { error: error.message, responseData: error.response?.data });
       
       // Fallback to basic summary on error
-      console.log('⚠️  Falling back to basic summary generation');
+      logger.warn('Falling back to basic summary generation');
       return this.generateBasicSummary(kycData);
     }
   }

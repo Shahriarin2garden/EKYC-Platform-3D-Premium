@@ -1,0 +1,37 @@
+version: '3.8'
+
+# Development override configuration
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - backend_pdfs:/app/pdfs
+    command: npm run dev
+    ports:
+      - "5000:5000"
+      - "9229:9229"  # Node.js debugger port
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - WDS_SOCKET_PORT=0
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm start
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true

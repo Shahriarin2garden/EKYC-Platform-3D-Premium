@@ -1,4 +1,5 @@
 const amqp = require('amqplib');
+const logger = require('./logger');
 
 let connection = null;
 let channel = null;
@@ -12,31 +13,31 @@ const PDF_QUEUE = 'pdf_generation_queue';
 async function connect() {
   try {
     if (connection) {
-      console.log('Already connected to RabbitMQ');
+      logger.rabbitmq('Already connected to RabbitMQ');
       return connection;
     }
 
-    console.log('Connecting to RabbitMQ...');
+    logger.rabbitmq('Connecting to RabbitMQ...');
     connection = await amqp.connect(RABBITMQ_URL);
     
-    console.log('RabbitMQ connected successfully');
+    logger.rabbitmq('RabbitMQ connected successfully');
 
     // Handle connection errors
     connection.on('error', (err) => {
-      console.error('RabbitMQ connection error:', err);
+      logger.error('RabbitMQ connection error', { error: err.message });
       connection = null;
       channel = null;
     });
 
     connection.on('close', () => {
-      console.log('RabbitMQ connection closed');
+      logger.rabbitmq('RabbitMQ connection closed');
       connection = null;
       channel = null;
     });
 
     return connection;
   } catch (error) {
-    console.error('Failed to connect to RabbitMQ:', error);
+    logger.error('Failed to connect to RabbitMQ', { error: error.message });
     throw error;
   }
 }
@@ -54,7 +55,7 @@ async function getChannel() {
       await connect();
     }
 
-    console.log('Creating RabbitMQ channel...');
+    logger.rabbitmq('Creating RabbitMQ channel...');
     channel = await connection.createChannel();
 
     // Assert the queue exists
@@ -63,11 +64,11 @@ async function getChannel() {
       maxPriority: 10 // Enable priority queue
     });
 
-    console.log(`Queue "${PDF_QUEUE}" ready`);
+    logger.rabbitmq(`Queue "${PDF_QUEUE}" ready`);
 
     return channel;
   } catch (error) {
-    console.error('Failed to create channel:', error);
+    logger.error('Failed to create channel', { error: error.message });
     throw error;
   }
 }
@@ -86,11 +87,11 @@ async function sendToQueue(queueName, message, options = {}) {
     };
 
     ch.sendToQueue(queueName, messageBuffer, { ...defaultOptions, ...options });
-    console.log(`Message sent to queue "${queueName}":`, message);
+    logger.rabbitmq(`Message sent to queue "${queueName}"`, { message });
     
     return true;
   } catch (error) {
-    console.error('Failed to send message to queue:', error);
+    logger.error('Failed to send message to queue', { error: error.message, queueName });
     throw error;
   }
 }
@@ -105,7 +106,7 @@ async function consumeQueue(queueName, callback, options = {}) {
     // Set prefetch to process one message at a time
     await ch.prefetch(options.prefetch || 1);
 
-    console.log(`Waiting for messages in queue "${queueName}"...`);
+    logger.rabbitmq(`Waiting for messages in queue "${queueName}"...`);
 
     ch.consume(
       queueName,
@@ -113,24 +114,24 @@ async function consumeQueue(queueName, callback, options = {}) {
         if (msg) {
           try {
             const content = JSON.parse(msg.content.toString());
-            console.log(`Received message from "${queueName}":`, content);
+            logger.rabbitmq(`Received message from "${queueName}"`, { content });
 
             // Execute the callback
             await callback(content, msg);
 
             // Acknowledge the message
             ch.ack(msg);
-            console.log('Message processed and acknowledged');
+            logger.rabbitmq('Message processed and acknowledged');
           } catch (error) {
-            console.error('Error processing message:', error);
+            logger.error('Error processing message', { error: error.message, queueName });
 
             // Reject and requeue the message if processing fails
             if (options.requeue !== false) {
               ch.nack(msg, false, true);
-              console.log('Message rejected and requeued');
+              logger.rabbitmq('Message rejected and requeued');
             } else {
               ch.nack(msg, false, false);
-              console.log('Message rejected without requeue');
+              logger.rabbitmq('Message rejected without requeue');
             }
           }
         }
@@ -142,7 +143,7 @@ async function consumeQueue(queueName, callback, options = {}) {
 
     return ch;
   } catch (error) {
-    console.error('Failed to consume queue:', error);
+    logger.error('Failed to consume queue', { error: error.message, queueName });
     throw error;
   }
 }
@@ -162,9 +163,9 @@ async function close() {
       connection = null;
     }
 
-    console.log('RabbitMQ connection closed');
+    logger.rabbitmq('RabbitMQ connection closed');
   } catch (error) {
-    console.error('Error closing RabbitMQ connection:', error);
+    logger.error('Error closing RabbitMQ connection', { error: error.message });
   }
 }
 
@@ -182,7 +183,7 @@ async function getQueueStats(queueName) {
       consumerCount: queueInfo.consumerCount
     };
   } catch (error) {
-    console.error('Failed to get queue stats:', error);
+    logger.error('Failed to get queue stats', { error: error.message, queueName });
     throw error;
   }
 }

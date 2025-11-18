@@ -137,7 +137,12 @@ EKYC System is an enterprise-grade solution designed for organizations requiring
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
+**Option 1: Docker (Recommended - Easiest Setup)**
+- **Docker Desktop** 20.10+ ([Download](https://www.docker.com/products/docker-desktop/))
+- **Docker Compose** 2.0+ (included with Docker Desktop)
+- **Git** ([Download](https://git-scm.com/))
+
+**Option 2: Manual Setup**
 - **Node.js** 16.x or higher ([Download](https://nodejs.org/))
 - **npm** 8.x or higher (comes with Node.js)
 - **MongoDB Atlas Account** (Free tier available at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas))
@@ -146,6 +151,43 @@ Before you begin, ensure you have the following installed:
 - **OpenRouter API Key** (Optional, for AI summaries) ([Get API Key](https://openrouter.ai/))
 
 ### Quick Start
+
+#### 🐳 Option 1: Docker Setup (Recommended)
+
+The fastest way to get started! All services (MongoDB, RabbitMQ, Backend, Frontend) run in containers.
+
+1. **Clone and Setup**
+```bash
+git clone https://github.com/Shahriarin2garden/EKYC-Theme.git
+cd EKYC-Theme
+
+# Copy environment file
+cp .env.example .env
+```
+
+2. **Run Quick Start Script**
+
+**Windows (PowerShell):**
+```powershell
+.\docker-start.ps1
+```
+
+**Linux/Mac:**
+```bash
+chmod +x docker-start.sh
+./docker-start.sh
+```
+
+3. **Access the Application**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api/health
+- RabbitMQ Console: http://localhost:15672 (admin/admin123)
+
+**That's it!** All services are running with a single command. See [DOCKER_GUIDE.md](./DOCKER_GUIDE.md) for detailed documentation.
+
+---
+
+#### Option 2: Manual Setup
 
 1. **Clone the repository**
 ```bash
@@ -552,6 +594,23 @@ npm test           # Run tests (when available)
 - **Queue System** - RabbitMQ for async processing (optional)
 
 ## Deployment
+
+### 🐳 Docker Deployment (Recommended)
+
+The simplest way to deploy is using Docker:
+
+```bash
+# Production deployment
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
+```
+
+For detailed Docker deployment instructions, see [DOCKER_GUIDE.md](./DOCKER_GUIDE.md).
 
 ### Frontend Deployment
 
