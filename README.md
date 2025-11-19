@@ -856,11 +856,44 @@ AI summary generation failed
 
 ## Documentation
 
-- [MongoDB Setup Guide](./QUICKSTART_MONGODB.md) - Detailed MongoDB configuration
-- [AI Integration Guide](./AI_SUMMARY_QUICKSTART.md) - OpenRouter AI setup
-- [Architecture Documentation](./docs/ARCHITECTURE.md) - System architecture
-- [Component Guide](./docs/COMPONENTS.md) - React component documentation
-- [Development Guide](./docs/DEVELOPMENT.md) - Development best practices
+### 📚 Essential Documentation
+
+#### Getting Started
+
+- **[Docker Guide](./DOCKER_GUIDE.md)** - Complete Docker setup and deployment instructions (Recommended)
+- **[MongoDB Setup Guide](./QUICKSTART_MONGODB.md)** - Detailed MongoDB Atlas configuration
+
+#### Development & Testing
+
+- **[Testing Guide](./TESTING.md)** - Comprehensive testing documentation and best practices
+- **[Test Commands](./TEST_COMMANDS.md)** - Quick reference for all test commands
+- **[Architecture](./ARCHITECTURE.md)** - System architecture and design decisions
+
+#### Advanced Features
+
+- **[JWT Workflow Documentation](./JWT_WORKFLOW_DOCUMENTATION.md)** - Authentication flow and JWT implementation
+- **[RabbitMQ Setup](./backend/RABBITMQ_SETUP.md)** - Message queue configuration for async PDF generation
+- **[Logging Guide](./backend/LOGGING_GUIDE.md)** - Application logging and monitoring
+- **[Design Guide](./frontend/DESIGN_GUIDE.md)** - UI/UX design system and component guidelines
+
+#### Quality & Analysis
+
+- **[SonarQube Quickstart](./SONARQUBE_QUICKSTART.md)** - Code quality analysis setup
+
+### 🔗 Quick Links
+
+| Category | Documentation | Description |
+|----------|--------------|-------------|
+| **Setup** | [Docker Guide](./DOCKER_GUIDE.md) | All-in-one containerized setup |
+| **Database** | [MongoDB Setup](./QUICKSTART_MONGODB.md) | Cloud database configuration |
+| **Testing** | [Testing Guide](./TESTING.md) | Unit & integration testing |
+| **Security** | [JWT Documentation](./JWT_WORKFLOW_DOCUMENTATION.md) | Authentication system |
+| **Queue** | [RabbitMQ Setup](./backend/RABBITMQ_SETUP.md) | Async PDF processing |
+| **Frontend** | [Design Guide](./frontend/DESIGN_GUIDE.md) | UI components & styling |
+| **Backend** | [Logging Guide](./backend/LOGGING_GUIDE.md) | Application logging |
+| **Quality** | [SonarQube](./SONARQUBE_QUICKSTART.md) | Code analysis |
+
+## Project Contribution Guidelines
 
 Contributions are welcome! Please follow these guidelines:
 
