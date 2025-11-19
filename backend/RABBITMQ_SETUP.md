@@ -6,7 +6,7 @@
 
 **Free cloud-hosted RabbitMQ service:**
 
-1. Go to https://www.cloudamqp.com
+1. Go to <https://www.cloudamqp.com>
 2. Click "Sign Up" (free account)
 3. Create a new instance:
    - Plan: "Little Lemur" (Free)
@@ -15,12 +15,15 @@
    - Click "Select Region"
 4. Copy the AMQP URL from dashboard
 5. Paste it in `backend/.env`:
-   ```
+
+   ```env
    RABBITMQ_URL=amqps://your-cloudamqp-url
    ```
+
 6. Restart the backend server
 
 **Benefits:**
+
 - ✅ No installation required
 - ✅ Works immediately
 - ✅ Free tier available
@@ -32,19 +35,26 @@
 
 1. Open PowerShell as Administrator
 2. Run:
+
    ```powershell
    choco install rabbitmq -y
    ```
+
 3. Start RabbitMQ service:
+
    ```powershell
    Start-Service RabbitMQ
    ```
+
 4. Enable management plugin:
+
    ```powershell
    rabbitmq-plugins enable rabbitmq_management
    ```
+
 5. Update `.env`:
-   ```
+
+   ```env
    RABBITMQ_URL=amqp://localhost:5672
    ```
 
@@ -58,7 +68,8 @@ docker run -d --name rabbitmq \
 ```
 
 Then update `.env`:
-```
+
+```env
 RABBITMQ_URL=amqp://localhost:5672
 ```
 
@@ -67,13 +78,15 @@ RABBITMQ_URL=amqp://localhost:5672
 After setting up RabbitMQ, verify it's working:
 
 1. **Restart Backend Server:**
+
    ```bash
    cd backend
    npm start
    ```
 
-2. **Look for success messages:**
-   ```
+2. **Look for success messages:
+
+   ```text
    Starting PDF Worker...
    Connecting to RabbitMQ...
    Queue "pdf_generation_queue" ready
@@ -81,6 +94,7 @@ After setting up RabbitMQ, verify it's working:
    ```
 
 3. **Test PDF Generation:**
+
    ```bash
    cd backend
    node src/services/testRabbitMQPdf.js
@@ -89,7 +103,7 @@ After setting up RabbitMQ, verify it's working:
 ## Management UI
 
 - **CloudAMQP**: Dashboard available in your CloudAMQP account
-- **Local RabbitMQ**: http://localhost:15672 (guest/guest)
+- **Local RabbitMQ**: <http://localhost:15672> (guest/guest)
 
 ## Troubleshooting
 
@@ -98,6 +112,7 @@ After setting up RabbitMQ, verify it's working:
 **Cause:** RABBITMQ_URL not configured or RabbitMQ not accessible
 
 **Solution:**
+
 1. Check `.env` file has RABBITMQ_URL
 2. Verify RabbitMQ is running
 3. Test connection manually
@@ -107,12 +122,14 @@ After setting up RabbitMQ, verify it's working:
 **Cause:** RabbitMQ server not running
 
 **Solution:**
+
 - For local: Start RabbitMQ service
 - For CloudAMQP: Check URL is correct
 
 ### PDF generation still works
 
 **Note:** The system has a fallback! If RabbitMQ is unavailable, PDFs are generated synchronously. This means:
+
 - ✅ PDFs will still generate
 - ⚠️ API requests will wait for PDF to complete
 - ⚠️ No queue-based processing
@@ -130,14 +147,16 @@ This tests direct PDF generation (synchronous mode).
 
 ## How It Works
 
-### With RabbitMQ (Async):
+### With RabbitMQ (Async)
+
 1. Admin requests PDF → Instant response
 2. Request queued in RabbitMQ
 3. PDF Worker processes queue
 4. PDF generated in background
 5. Admin downloads when ready
 
-### Without RabbitMQ (Sync):
+### Without RabbitMQ (Sync)
+
 1. Admin requests PDF → Wait
 2. PDF generated immediately
 3. Response when complete

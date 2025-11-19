@@ -15,6 +15,7 @@ A modern, full-stack Know Your Customer (KYC) application with MongoDB database 
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
+- [Testing](#testing)
 - [Configuration](#configuration)
 - [Development](#development)
 - [Deployment](#deployment)
@@ -427,6 +428,50 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 5. **Connect**: Get connection string and update `.env` file
 
 For detailed MongoDB setup instructions, see [QUICKSTART_MONGODB.md](./QUICKSTART_MONGODB.md)
+
+## Testing
+
+The project includes comprehensive unit testing coverage for both backend and frontend.
+
+### Quick Start
+
+```bash
+# Run all tests
+npm run test:all
+
+# Run backend tests only
+npm run test:backend
+
+# Run frontend tests only
+npm run test:frontend
+
+# Run with coverage
+npm run test:coverage
+```
+
+### Test Coverage
+
+- ✅ **Backend Tests** (8 test suites)
+  - Models: Admin, KYC
+  - Controllers: Admin, KYC
+  - Middleware: Authentication
+  - Services: AI Service, PDF Service
+
+- ✅ **Frontend Tests** (6 test suites)
+  - Components: FormStatus, InputField
+  - Pages: KycForm, AdminLogin, AdminDashboard
+  - Services: API client
+
+### Testing Stack
+
+- **Backend**: Jest, Supertest, MongoDB Memory Server
+- **Frontend**: Jest, React Testing Library, jest-dom
+
+### Documentation
+
+For detailed testing documentation, see:
+- [TESTING.md](./TESTING.md) - Complete testing guide
+- [TEST_COMMANDS.md](./TEST_COMMANDS.md) - Quick command reference
 
 ## Development
 

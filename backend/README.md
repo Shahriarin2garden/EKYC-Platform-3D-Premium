@@ -4,7 +4,7 @@ Backend API server for EKYC system with PDF generation capability using RabbitMQ
 
 ## Directory Structure
 
-```
+```text
 backend/
 ├── src/
 │   ├── server.js          # Main server file
@@ -31,11 +31,13 @@ backend/
 ## Setup
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Create `.env` file:
+
    ```bash
    cp .env.example .env
    ```
@@ -43,6 +45,7 @@ backend/
 3. Update environment variables in `.env`
 
 4. Start server:
+
    ```bash
    npm run dev    # Development mode
    npm start      # Production mode
@@ -61,9 +64,11 @@ backend/
 ## API Endpoints
 
 ### Health Check
+
 - GET `/api/health` - Server status
 
 ### KYC
+
 - POST `/api/kyc/submit` - Submit KYC application
 - GET `/api/kyc` - Get all KYC applications (Admin)
 - GET `/api/kyc/:id` - Get KYC by ID (Admin)
@@ -72,6 +77,7 @@ backend/
 - DELETE `/api/kyc/:id` - Delete KYC application (Admin)
 
 ### Admin
+
 - POST `/api/admin/register` - Admin registration
 - POST `/api/admin/login` - Admin login
 - GET `/api/admin/profile` - Get admin profile
@@ -80,6 +86,7 @@ backend/
 - GET `/api/admin/all` - Get all admins
 
 ### PDF Generation (Admin Only)
+
 - POST `/api/admin/kyc/:kycId/generate-pdf` - Request PDF generation
 - GET `/api/admin/kyc/:kycId/download-pdf` - Download generated PDF
 - GET `/api/admin/kyc/:kycId/pdf-status` - Check PDF generation status
@@ -91,11 +98,13 @@ backend/
 ### 1. Install RabbitMQ
 
 **Windows:**
+
 ```powershell
 .\setup-rabbitmq.ps1
 ```
 
 **macOS/Linux:**
+
 ```bash
 brew install rabbitmq  # macOS
 # or
@@ -103,17 +112,21 @@ sudo apt-get install rabbitmq-server  # Linux
 ```
 
 ### 2. Start RabbitMQ
+
 ```bash
 rabbitmq-server
 ```
 
 ### 3. Configure Environment
+
 Add to `.env`:
+
 ```env
 RABBITMQ_URL=amqp://localhost:5672
 ```
 
 ### 4. Start Server
+
 ```bash
 npm install
 npm start
