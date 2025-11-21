@@ -59,11 +59,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check route
 app.get('/api/health', (req, res) => {
-  res.json({ 
+  logger.info('Health check requested');
+  res.status(200).json({ 
     status: 'success', 
     message: 'EKYC API Server is running',
     timestamp: new Date().toISOString(),
+    port: process.env.PORT,
     database: 'Connected'
+  });
+});
+
+// Root health check for Railway
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok',
+    service: 'EKYC Backend API',
+    version: '1.0.0'
   });
 });
 
@@ -93,13 +104,20 @@ app.use((req, res) => {
 const PORT = Number.parseInt(process.env.PORT, 10) || 5000;
 const HOST = '0.0.0.0';
 
+logger.info(`Starting server with PORT=${PORT}, HOST=${HOST}`);
+logger.info(`Environment variables: PORT=${process.env.PORT}, NODE_ENV=${process.env.NODE_ENV}`);
+
 // Add error handling for server startup
 const server = app.listen(PORT, HOST, () => {
-  logger.info(`EKYC API Server running on ${HOST}:${PORT}`);
-  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`PDF Worker: ${process.env.RABBITMQ_URL ? 'Enabled' : 'Disabled (RabbitMQ URL not configured)'}`);
+  logger.info(`✅ EKYC API Server successfully started`);
+  logger.info(`🌐 Listening on ${HOST}:${PORT}`);
+  logger.info(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`📄 PDF Worker: ${process.env.RABBITMQ_URL ? 'Enabled' : 'Disabled (RabbitMQ URL not configured)'}`);
 }).on('error', (err) => {
-  logger.error('Server failed to start', { error: err.message, port: PORT });
+  logger.error('❌ Server failed to start', { error: err.message, port: PORT, code: err.code });
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`Port ${PORT} is already in use`);
+  }
   process.exit(1);
 });
 
