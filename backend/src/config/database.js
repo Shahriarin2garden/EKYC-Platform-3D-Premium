@@ -3,16 +3,25 @@ const logger = require('./logger');
 
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ekyc_db';
+    const mongoURI = process.env.MONGODB_URI;
+    
+    if (!mongoURI) {
+      logger.warn('⚠️  MONGODB_URI not configured in environment variables');
+      logger.warn('Database Solutions:');
+      logger.warn('  1. Set MONGODB_URI in Railway environment variables');
+      logger.warn('  2. Use MongoDB Atlas: https://www.mongodb.com/cloud/atlas/register');
+      return null;
+    }
     
     logger.database('Connecting to MongoDB...');
     logger.database(`URI: ${mongoURI.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@')}`);
     
     const conn = await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      serverSelectionTimeoutMS: 8000, // Timeout after 8s
+      socketTimeoutMS: 45000,
     });
 
-    logger.database(`MongoDB Connected: ${conn.connection.host}`);
+    logger.database(`✅ MongoDB Connected: ${conn.connection.host}`);
     logger.database(`Database: ${conn.connection.name}`);
     
     // Handle connection events
@@ -21,22 +30,22 @@ const connectDB = async () => {
     });
 
     mongoose.connection.on('disconnected', () => {
-      logger.warn('MongoDB disconnected');
+      logger.warn('MongoDB disconnected - attempting to reconnect...');
     });
 
     mongoose.connection.on('reconnected', () => {
-      logger.database('MongoDB reconnected');
+      logger.database('✅ MongoDB reconnected');
     });
 
     return conn;
   } catch (error) {
-    logger.error('Error connecting to MongoDB', { error: error.message });
+    logger.error('❌ Error connecting to MongoDB', { error: error.message, stack: error.stack });
     logger.error('MongoDB Connection Solutions:');
-    logger.error('  1. Install MongoDB locally: https://www.mongodb.com/try/download/community');
-    logger.error('  2. Use MongoDB Atlas (Free Cloud): https://www.mongodb.com/cloud/atlas/register');
-    logger.error('  3. Update MONGODB_URI in .env file with your connection string');
-    logger.warn('Server will continue without database connection');
-    // Don't exit - let server run without DB for now
+    logger.error('  1. Verify MONGODB_URI is correct in Railway environment variables');
+    logger.error('  2. Check if MongoDB Atlas IP whitelist includes 0.0.0.0/0');
+    logger.error('  3. Verify MongoDB cluster is running and accessible');
+    logger.warn('⚠️  Server will continue without database connection');
+    // Don't throw - let server run without DB
     return null;
   }
 };

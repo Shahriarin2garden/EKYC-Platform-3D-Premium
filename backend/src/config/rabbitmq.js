@@ -17,10 +17,20 @@ async function connect() {
       return connection;
     }
 
+    if (!RABBITMQ_URL || RABBITMQ_URL === 'amqp://localhost:5672') {
+      throw new Error('RABBITMQ_URL not configured or using default localhost');
+    }
+
     logger.rabbitmq('Connecting to RabbitMQ...');
-    connection = await amqp.connect(RABBITMQ_URL);
+    // Add connection timeout
+    connection = await Promise.race([
+      amqp.connect(RABBITMQ_URL),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('RabbitMQ connection timeout')), 10000)
+      )
+    ]);
     
-    logger.rabbitmq('RabbitMQ connected successfully');
+    logger.rabbitmq('✅ RabbitMQ connected successfully');
 
     // Handle connection errors
     connection.on('error', (err) => {
@@ -37,7 +47,7 @@ async function connect() {
 
     return connection;
   } catch (error) {
-    logger.error('Failed to connect to RabbitMQ', { error: error.message });
+    logger.error('❌ Failed to connect to RabbitMQ', { error: error.message });
     throw error;
   }
 }

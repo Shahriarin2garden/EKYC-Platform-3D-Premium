@@ -7,10 +7,12 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "jest",
+    "test:server": "node test-server.js",
     "test:pdf": "node src/services/testPdfGeneration.js",
     "test:pdf-quick": "node src/services/quickPdfTest.js",
     "test:pdf-rabbitmq": "node src/services/testRabbitMQPdf.js",
-    "test:pdf-all": "node src/services/quickPdfTest.js && node src/services/testPdfGeneration.js"
+    "test:pdf-all": "node src/services/quickPdfTest.js && node src/services/testPdfGeneration.js",
+    "healthcheck": "node healthcheck.js"
   },
   "keywords": [
     "kyc",
