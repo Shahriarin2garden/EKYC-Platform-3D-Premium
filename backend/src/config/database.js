@@ -35,7 +35,9 @@ const connectDB = async () => {
     logger.error('  1. Install MongoDB locally: https://www.mongodb.com/try/download/community');
     logger.error('  2. Use MongoDB Atlas (Free Cloud): https://www.mongodb.com/cloud/atlas/register');
     logger.error('  3. Update MONGODB_URI in .env file with your connection string');
-    process.exit(1);
+    logger.warn('Server will continue without database connection');
+    // Don't exit - let server run without DB for now
+    return null;
   }
 };
 

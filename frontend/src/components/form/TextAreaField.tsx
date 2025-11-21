@@ -33,28 +33,28 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
   const isNearLimit = charCount > maxChars * 0.8;
 
   const getTextAreaClassName = (): string => {
-    const baseClasses = 'w-full px-5 py-4 border-2 rounded-2xl transition-all duration-300 outline-none resize-none font-medium text-gray-900 placeholder:text-gray-400 placeholder:font-normal transform';
+    const baseClasses = 'w-full bg-brand-dark border rounded-lg px-4 py-3 text-brand-white placeholder-gray-500 focus:outline-none transition-all duration-200 resize-none';
     
     if (isFocused) {
-      return `${baseClasses} border-blue-400 bg-blue-50/30 shadow-elevation-2 shadow-blue-100/50 ring-2 ring-blue-200/50 scale-[1.01]`;
+      return `${baseClasses} border-brand-accent focus:border-brand-accent focus:ring-1 focus:ring-brand-accent`;
     }
     if (hasValue) {
-      return `${baseClasses} border-gray-300 bg-gray-50/50 hover:border-gray-400 hover:shadow-elevation-1`;
+      return `${baseClasses} border-brand-gray/50 hover:border-brand-gray`;
     }
-    return `${baseClasses} border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:shadow-elevation-1 hover:bg-white/80 focus:border-blue-500 focus:bg-blue-50/50 focus:ring-4 focus:ring-blue-100 focus:scale-[1.01]`;
+    return `${baseClasses} border-brand-gray/50 hover:border-brand-gray`;
   };
 
   return (
-    <div className="group animate-slide-up">
-      <div className="flex items-center justify-between mb-3">
+    <div className="group">
+      <div className="flex items-center justify-between mb-2">
         <label 
-          className="text-sm font-bold text-gray-700 transition-colors group-focus-within:text-blue-600" 
+          className="text-xs font-medium text-gray-400 uppercase tracking-wider" 
           htmlFor={id}
         >
-          {label} {required && <span className="text-red-500">*</span>}
+          {label} {required && <span className="text-brand-accent">*</span>}
         </label>
         {hasValue && (
-          <span className={`text-xs font-semibold transition-colors ${isNearLimit ? 'text-orange-600' : 'text-gray-500'}`}>
+          <span className={`text-xs font-medium transition-colors ${isNearLimit ? 'text-red-500' : 'text-gray-500'}`}>
             {charCount} / {maxChars}
           </span>
         )}
@@ -74,19 +74,14 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
           placeholder={placeholder}
         />
         
-        {/* Focus Ring Effect - Subtle and non-distracting */}
-        {isFocused && (
-          <div className="absolute inset-0 -m-1 rounded-2xl bg-blue-400 opacity-10 blur-lg pointer-events-none"></div>
-        )}
-
         {/* Character Count Progress Bar */}
         {hasValue && (
-          <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div className="mt-2 h-0.5 bg-brand-gray/30 rounded-full overflow-hidden">
             <div 
               className={`h-full transition-all duration-300 ${
                 isNearLimit 
-                  ? 'bg-gradient-to-r from-orange-400 to-red-500' 
-                  : 'bg-gradient-to-r from-blue-500 to-purple-500'
+                  ? 'bg-red-500' 
+                  : 'bg-brand-accent'
               }`}
               style={{ width: `${(charCount / maxChars) * 100}%` }}
             ></div>

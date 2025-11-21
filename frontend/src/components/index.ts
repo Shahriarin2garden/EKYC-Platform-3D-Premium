@@ -15,3 +15,4 @@ export { default as LoadingSpinner } from './common/LoadingSpinner';
 export { default as Card } from './common/Card';
 export { default as Badge } from './common/Badge';
 export { default as Toast } from './common/Toast';
+export { default as ThemeToggle } from './common/ThemeToggle';

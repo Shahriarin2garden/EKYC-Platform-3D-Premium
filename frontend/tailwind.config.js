@@ -2,6 +2,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       animation: {
@@ -17,6 +18,10 @@ module.exports = {
         'shimmer': 'shimmer 3s linear infinite',
         'float': 'float 3s ease-in-out infinite',
         'glow': 'glow 2s ease-in-out infinite',
+        'rotate-y': 'rotate-y 20s linear infinite',
+        'slide-3d': 'slide-3d 0.8s ease-out',
+        'morph': 'morph 8s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -64,52 +69,51 @@ module.exports = {
           '0%, 100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)' },
           '50%': { boxShadow: '0 0 30px rgba(139, 92, 246, 0.5)' },
         },
+        'rotate-y': {
+          '0%': { transform: 'rotateY(0deg)' },
+          '100%': { transform: 'rotateY(360deg)' },
+        },
+        'slide-3d': {
+          '0%': { transform: 'translateZ(-100px) rotateX(-20deg)', opacity: '0' },
+          '100%': { transform: 'translateZ(0) rotateX(0)', opacity: '1' },
+        },
+        'morph': {
+          '0%, 100%': { borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%' },
+          '50%': { borderRadius: '70% 30% 30% 70% / 70% 70% 30% 30%' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.4), inset 0 0 20px rgba(59, 130, 246, 0.1)' },
+          '50%': { boxShadow: '0 0 80px rgba(59, 130, 246, 0.6), inset 0 0 40px rgba(59, 130, 246, 0.2)' },
+        },
       },
       colors: {
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
-        },
-        accent: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7e22ce',
-          800: '#6b21a8',
-          900: '#581c87',
-          950: '#3b0764',
+        brand: {
+          black: '#0a0a0a',
+          dark: '#0f0f10',
+          darker: '#070708',
+          gray: '#27272a',
+          light: '#f4f4f5',
+          white: '#ffffff',
+          accent: '#3b82f6',
+          'accent-light': '#60a5fa',
+          'accent-dark': '#2563eb',
+          purple: '#8b5cf6',
+          cyan: '#06b6d4',
         },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'shimmer': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+        'grid-pattern': "linear-gradient(to right, #27272a 1px, transparent 1px), linear-gradient(to bottom, #27272a 1px, transparent 1px)",
+        'mesh-gradient': 'radial-gradient(at 40% 20%, rgba(59, 130, 246, 0.15) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(59, 130, 246, 0.1) 0px, transparent 50%)',
       },
       boxShadow: {
-        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-        'glow': '0 0 20px rgba(59, 130, 246, 0.3)',
-        'glow-lg': '0 0 30px rgba(59, 130, 246, 0.4)',
-        'glow-xl': '0 0 40px rgba(139, 92, 246, 0.5)',
-        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-        'neon': '0 0 5px theme(colors.blue.400), 0 0 20px theme(colors.blue.600)',
-        'neon-purple': '0 0 5px theme(colors.purple.400), 0 0 20px theme(colors.purple.600)',
-        'elevation-1': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
-        'elevation-2': '0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12)',
-        'elevation-3': '0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10)',
-        'elevation-4': '0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05)',
+        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.1)',
+        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+        'glow-lg': '0 0 40px rgba(59, 130, 246, 0.4)',
+        'inner-glow': 'inset 0 0 20px rgba(59, 130, 246, 0.1)',
+        '3d': '0 20px 60px -15px rgba(0, 0, 0, 0.7), 0 10px 30px -15px rgba(59, 130, 246, 0.3)',
+        '3d-hover': '0 30px 80px -20px rgba(0, 0, 0, 0.8), 0 15px 40px -15px rgba(59, 130, 246, 0.5)',
       },
       backdropBlur: {
         xs: '2px',
@@ -126,6 +130,14 @@ module.exports = {
       scale: {
         '102': '1.02',
         '103': '1.03',
+        '105': '1.05',
+      },
+      perspective: {
+        '1000': '1000px',
+        '2000': '2000px',
+      },
+      transformStyle: {
+        '3d': 'preserve-3d',
       },
     },
   },

@@ -100,7 +100,7 @@ const PdfButton: React.FC<PdfButtonProps> = ({ kycId, onSuccess, onError }) => {
     return (
       <button
         disabled
-        className="w-9 h-9 bg-gray-300 text-white rounded-xl flex items-center justify-center cursor-not-allowed"
+        className="p-2 bg-brand-gray/20 text-brand-white/30 rounded-lg flex items-center justify-center cursor-not-allowed"
         title="Checking PDF status..."
       >
         <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -116,7 +116,7 @@ const PdfButton: React.FC<PdfButtonProps> = ({ kycId, onSuccess, onError }) => {
       <button
         onClick={handleDownloadPdf}
         disabled={loading}
-        className={`w-9 h-9 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-xl flex items-center justify-center transition-all duration-200 transform hover:scale-110 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
+        className={`p-2 text-brand-accent hover:bg-brand-accent/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
           loading ? 'animate-pulse' : ''
         }`}
         title={`Download PDF (Generated: ${pdfGeneratedAt ? new Date(pdfGeneratedAt).toLocaleString() : 'recently'})`}
@@ -128,7 +128,7 @@ const PdfButton: React.FC<PdfButtonProps> = ({ kycId, onSuccess, onError }) => {
           </svg>
         ) : (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         )}
       </button>
@@ -139,7 +139,7 @@ const PdfButton: React.FC<PdfButtonProps> = ({ kycId, onSuccess, onError }) => {
     <button
       onClick={handleGeneratePdf}
       disabled={loading}
-      className={`w-9 h-9 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl flex items-center justify-center transition-all duration-200 transform hover:scale-110 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
+      className={`p-2 text-brand-white/70 hover:text-brand-white hover:bg-brand-white/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
         loading ? 'animate-pulse' : ''
       }`}
       title="Generate PDF Report"
@@ -151,7 +151,7 @@ const PdfButton: React.FC<PdfButtonProps> = ({ kycId, onSuccess, onError }) => {
         </svg>
       ) : (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       )}
     </button>
