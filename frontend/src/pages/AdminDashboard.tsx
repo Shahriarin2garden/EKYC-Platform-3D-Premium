@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PdfButton from '../components/common/PdfButton';
 
+// Use environment variable for API URL
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 interface KycApplication {
   _id: string;
   name: string;
@@ -67,7 +70,7 @@ const AdminDashboard: React.FC = () => {
       console.log('Fetching KYC data...');
 
       // Fetch KYC applications using axios directly with proper endpoint
-      const kycResponse = await axios.get('http://localhost:5000/api/kyc', {
+      const kycResponse = await axios.get(`${API_URL}/kyc`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -81,7 +84,7 @@ const AdminDashboard: React.FC = () => {
       }
 
       // Fetch statistics
-      const statsResponse = await axios.get('http://localhost:5000/api/kyc/statistics', {
+      const statsResponse = await axios.get(`${API_URL}/kyc/statistics`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -176,7 +179,7 @@ const AdminDashboard: React.FC = () => {
       console.log('Updating status for:', id, 'to:', newStatus);
       
       const response = await axios.patch(
-        `http://localhost:5000/api/kyc/${id}/status`,
+        `${API_URL}/kyc/${id}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -508,7 +511,7 @@ const AdminDashboard: React.FC = () => {
                         try {
                           const token = localStorage.getItem('token');
                           const response = await axios.post(
-                            `http://localhost:5000/api/kyc/${selectedApplication._id}/regenerate-summary`,
+                            `${API_URL}/kyc/${selectedApplication._id}/regenerate-summary`,
                             {},
                             { headers: { Authorization: `Bearer ${token}` } }
                           );

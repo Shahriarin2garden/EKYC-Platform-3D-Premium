@@ -46,7 +46,7 @@ export const kycApi = {
     apiClient.post<ApiResponse>('/kyc/submit', data),
   
   getAll: () => 
-    apiClient.get<ApiResponse>('/kyc/all'),
+    apiClient.get<ApiResponse>('/kyc'),
   
   getById: (id: string) => 
     apiClient.get<ApiResponse>(`/kyc/${id}`),
