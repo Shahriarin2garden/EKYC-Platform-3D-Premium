@@ -7,7 +7,14 @@ const auth = async (req, res, next) => {
     // Get token from header
     const authHeader = req.header('Authorization');
     
+    logger.info('Auth middleware - checking authorization', { 
+      path: req.path, 
+      hasAuthHeader: !!authHeader,
+      authHeaderStart: authHeader?.substring(0, 20)
+    });
+    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.warn('Auth failed - no valid token', { path: req.path });
       return res.status(401).json({
         success: false,
         message: 'No token provided, authorization denied'

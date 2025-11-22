@@ -88,6 +88,11 @@ exports.submitKyc = async (req, res) => {
 // Get all KYC applications (for admin)
 exports.getAllKyc = async (req, res) => {
   try {
+    logger.info('GET /api/kyc - Fetching all KYC applications', { 
+      admin: req.admin?.email,
+      query: req.query 
+    });
+    
     const { status, page = 1, limit = 10, sortBy = 'submittedAt', order = 'desc' } = req.query;
 
     // Build query
@@ -110,6 +115,12 @@ exports.getAllKyc = async (req, res) => {
     // Get total count for pagination
     const total = await Kyc.countDocuments(query);
 
+    logger.info('GET /api/kyc - Success', { 
+      count: kycs.length,
+      total,
+      page: Number.parseInt(page, 10)
+    });
+
     res.json({
       success: true,
       message: 'KYC applications retrieved successfully',
@@ -124,7 +135,7 @@ exports.getAllKyc = async (req, res) => {
       }
     });
   } catch (error) {
-    logger.error('Get all KYC error', { error: error.message });
+    logger.error('Get all KYC error', { error: error.message, stack: error.stack });
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve KYC applications',
