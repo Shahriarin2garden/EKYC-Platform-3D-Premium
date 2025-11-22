@@ -5,8 +5,15 @@ const logger = require('../config/logger');
 
 // Ensure the pdfs directory exists
 const PDF_DIR = path.join(__dirname, '../../pdfs');
-if (!fs.existsSync(PDF_DIR)) {
-  fs.mkdirSync(PDF_DIR, { recursive: true });
+try {
+  if (!fs.existsSync(PDF_DIR)) {
+    fs.mkdirSync(PDF_DIR, { recursive: true });
+    logger.info('PDF directory created', { path: PDF_DIR });
+  } else {
+    logger.info('PDF directory exists', { path: PDF_DIR });
+  }
+} catch (error) {
+  logger.error('Failed to create PDF directory', { error: error.message, path: PDF_DIR });
 }
 
 /**
@@ -17,10 +24,14 @@ if (!fs.existsSync(PDF_DIR)) {
 async function generateKycPdf(kycData) {
   return new Promise((resolve, reject) => {
     try {
+      logger.pdf('Starting PDF generation', { kycId: kycData._id });
+      
       // Create a unique filename
       const timestamp = Date.now();
       const filename = `kyc_${kycData._id}_${timestamp}.pdf`;
       const filePath = path.join(PDF_DIR, filename);
+
+      logger.pdf('PDF path created', { filename, filePath });
 
       // Create a PDF document
       const doc = new PDFDocument({
