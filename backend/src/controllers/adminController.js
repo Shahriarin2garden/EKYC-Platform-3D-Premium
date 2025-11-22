@@ -345,7 +345,7 @@ exports.downloadPdf = async (req, res) => {
     const { kycId } = req.params;
 
     // Fetch KYC record
-    const kyc = await Kyc.findById(kycId);
+    const kyc = await Kyc.findById(kycId).populate('reviewedBy', 'name email');
     if (!kyc) {
       return res.status(404).json({
         success: false,
@@ -353,46 +353,53 @@ exports.downloadPdf = async (req, res) => {
       });
     }
 
-    // Check if PDF exists
-    if (!kyc.pdfPath || !pdfService.pdfExists(kyc.pdfPath)) {
-      return res.status(404).json({
-        success: false,
-        message: 'PDF not found. Please generate the PDF first.',
-        data: {
-          kycId,
-          pdfGenerated: false
+    logger.info('Downloading PDF for KYC', { kycId, hasPdfPath: !!kyc.pdfPath });
+
+    // Check if PDF exists on filesystem
+    if (kyc.pdfPath && pdfService.pdfExists(kyc.pdfPath)) {
+      // PDF exists, stream it
+      const filename = path.basename(kyc.pdfPath);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+      const fileStream = fs.createReadStream(kyc.pdfPath);
+      fileStream.pipe(res);
+
+      fileStream.on('error', (error) => {
+        logger.error('Error streaming PDF', { error: error.message, kycId });
+        if (!res.headersSent) {
+          res.status(500).json({
+            success: false,
+            message: 'Failed to download PDF'
+          });
         }
       });
+    } else {
+      // PDF doesn't exist (ephemeral filesystem), generate on-demand
+      logger.info('PDF file not found on disk, generating on-demand', { kycId });
+      
+      // Generate PDF in memory and stream directly
+      const pdfBuffer = await pdfService.generateKycPdfBuffer(kyc);
+      
+      // Set headers for PDF download
+      const filename = `kyc_report_${kycId}_${Date.now()}.pdf`;
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+
+      // Send the PDF buffer
+      res.send(pdfBuffer);
     }
 
-    // Get the filename
-    const filename = path.basename(kyc.pdfPath);
-
-    // Set headers for PDF download
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
-    // Stream the PDF file
-    const fileStream = fs.createReadStream(kyc.pdfPath);
-    fileStream.pipe(res);
-
-    fileStream.on('error', (error) => {
-      logger.error('Error streaming PDF', { error: error.message, kycId: req.params.kycId });
-      if (!res.headersSent) {
-        res.status(500).json({
-          success: false,
-          message: 'Failed to download PDF'
-        });
-      }
-    });
-
   } catch (error) {
-    logger.error('Download PDF error', { error: error.message, kycId: req.params.kycId });
-    res.status(500).json({
-      success: false,
-      message: 'Failed to download PDF',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    logger.error('Download PDF error', { error: error.message, stack: error.stack, kycId: req.params.kycId });
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to download PDF',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
   }
 };
 
