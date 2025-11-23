@@ -135,21 +135,21 @@ function KycForm(): JSX.Element {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        {/* Enhanced Header Section */}
-        <div className="mb-12 text-center animate-fadeInUp">
-          <div className="relative inline-block mb-6">
+        {/* Enhanced Header Section with staggered animations */}
+        <div className="mb-12 text-center">
+          <div className="relative inline-block mb-6 animate-fadeInDown">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 dark:from-brand-accent dark:to-purple-500 rounded-3xl blur-2xl opacity-20 dark:opacity-40 animate-pulse"></div>
-            <h1 className="relative text-5xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-brand-white bg-clip-text">
+            <h1 className="relative text-5xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-brand-white">
               KYC Verification
             </h1>
           </div>
-          <p className="text-xl text-gray-600 dark:text-brand-white/60 font-medium max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-brand-white/60 font-medium max-w-2xl mx-auto animate-fadeInUp delay-100">
             Complete your identity verification with enterprise-grade security
           </p>
         </div>
 
         {/* Form Card with Premium 3D Design */}
-        <div className="card-3d p-10 md:p-14 animate-fadeInUp delay-100">
+        <div className="card-3d p-10 md:p-14 animate-zoomIn delay-150">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Name Field */}
             <InputField

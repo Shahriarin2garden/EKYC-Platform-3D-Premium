@@ -467,23 +467,32 @@ const AdminDashboard: React.FC = () => {
           >
             <dialog 
               open
-              className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-brand-gray/20 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scaleIn relative flex flex-col" 
+              className="bg-gradient-to-b dark:from-brand-dark/98 dark:to-brand-darker/98 from-gray-50 to-white border border-gray-200 dark:border-brand-gray/20 rounded-3xl max-w-5xl w-full max-h-[95vh] overflow-y-auto shadow-2xl animate-scaleIn relative flex flex-col backdrop-blur-xl" 
               aria-labelledby="modal-title"
             >
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-xl px-8 py-6 border-b border-gray-200 dark:border-brand-gray/20 flex justify-between items-start z-20">
-              <div>
-                <div className="flex items-center space-x-4 mb-2">
-                  <h3 id="modal-title" className="text-2xl font-bold text-gray-900 dark:text-brand-white">Application Details</h3>
-                  <span className={`px-4 py-1.5 inline-flex text-sm font-bold rounded-full border ${getStatusBadgeColor(selectedApplication.status)} shadow-sm`}>
-                    {selectedApplication.status.replace('_', ' ').toUpperCase()}
-                  </span>
+            {/* Decorative gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/5 via-transparent to-purple-500/5 dark:from-brand-accent/10 dark:to-purple-500/10 pointer-events-none rounded-3xl"></div>
+
+            {/* Modal Header with enhanced styling */}
+            <div className="sticky top-0 bg-gradient-to-r from-white/98 to-gray-50/95 dark:from-brand-dark/98 dark:via-brand-dark/95 dark:to-brand-darker/95 backdrop-blur-xl px-8 py-6 border-b border-gray-200 dark:border-brand-white/5 flex justify-between items-start z-20 relative">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-4">
+                  <h3 id="modal-title" className="text-3xl font-black text-gray-900 dark:text-brand-white tracking-tight">Application Details</h3>
+                  <div className="flex items-center space-x-2">
+                    <div className={`h-3 w-3 rounded-full ${selectedApplication.status === 'approved' ? 'bg-green-500' : selectedApplication.status === 'rejected' ? 'bg-red-500' : 'bg-yellow-500'}`}></div>
+                    <span className={`px-4 py-2 inline-flex text-sm font-bold rounded-full border ${getStatusBadgeColor(selectedApplication.status)} shadow-lg`}>
+                      {selectedApplication.status.replace('_', ' ').toUpperCase()}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-brand-white/40 font-mono">ID: {selectedApplication._id}</p>
+                <p className="text-sm text-gray-500 dark:text-brand-white/50 font-mono flex items-center space-x-2">
+                  <span className="text-gray-400 dark:text-brand-white/30">→</span>
+                  <span>Reference ID: <span className="text-brand-white/70 font-semibold">{selectedApplication._id.slice(-8)}</span></span>
+                </p>
               </div>
               <button 
                 onClick={closeModal}
-                className="p-2 rounded-full bg-gray-100 dark:bg-brand-white/5 text-gray-500 dark:text-brand-white/50 hover:bg-gray-200 dark:hover:bg-brand-white/10 hover:text-gray-900 dark:hover:text-brand-white transition-all duration-200"
+                className="p-2.5 rounded-full bg-gray-200 dark:bg-brand-white/10 text-gray-600 dark:text-brand-white/60 hover:bg-gray-300 dark:hover:bg-brand-white/20 hover:text-gray-900 dark:hover:text-brand-white transition-all duration-300 hover-scale"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -491,46 +500,66 @@ const AdminDashboard: React.FC = () => {
               </button>
             </div>
             
-            <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
               {/* Left Column: Personal Info */}
-              <div className="lg:col-span-2 space-y-8">
-                {/* Profile Header */}
-                <div className="flex items-center space-x-6 p-6 bg-gray-50 dark:bg-brand-white/5 rounded-2xl border border-gray-100 dark:border-brand-white/5">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                    {selectedApplication.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-gray-900 dark:text-brand-white mb-1">{selectedApplication.name}</h4>
-                    <p className="text-gray-500 dark:text-brand-white/60">{selectedApplication.occupation || 'No occupation listed'}</p>
-                    <div className="flex items-center mt-2 text-sm text-gray-500 dark:text-brand-white/40">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      Submitted on {new Date(selectedApplication.submittedAt).toLocaleDateString()}
+              <div className="lg:col-span-2 space-y-8 animate-slideInLeft">
+                {/* Profile Header - Enhanced */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-brand-accent/20 dark:to-purple-500/20 rounded-3xl blur-2xl transition-all duration-500 group-hover:opacity-100 opacity-0"></div>
+                  <div className="relative flex items-center space-x-6 p-8 bg-gradient-to-br from-white to-gray-50/50 dark:from-brand-white/[0.08] dark:to-brand-white/[0.03] rounded-3xl border border-gray-200/50 dark:border-brand-white/10 backdrop-blur-xl hover-lift">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl blur-lg opacity-75"></div>
+                      <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-2xl">
+                        {selectedApplication.name.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-2xl font-black text-gray-900 dark:text-brand-white mb-2 tracking-tight">{selectedApplication.name}</h4>
+                      <p className="text-lg text-gray-600 dark:text-brand-white/70 font-medium mb-3">{selectedApplication.occupation || 'No occupation listed'}</p>
+                      <div className="flex items-center space-x-4 text-sm">
+                        <div className="flex items-center text-gray-500 dark:text-brand-white/50">
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span>{new Date(selectedApplication.submittedAt).toLocaleDateString()}</span>
+                        </div>
+                        <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-brand-white/20"></div>
+                        <div className="text-gray-500 dark:text-brand-white/50">
+                          Submitted on {new Date(selectedApplication.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Detailed Info Grid */}
-                <div>
-                  <h4 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-brand-white/40 mb-4">Personal Information</h4>
+                {/* Detailed Info Grid - Enhanced */}
+                <div className="space-y-4 animate-fadeInUp delay-100">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <div className="w-1 h-6 bg-gradient-to-b from-brand-accent to-purple-500 rounded-full"></div>
+                    <h4 className="text-sm font-black uppercase tracking-wider text-gray-700 dark:text-brand-white/60">Personal Information</h4>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
-                      { label: 'Email Address', value: selectedApplication.email, icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
-                      { label: 'National ID', value: selectedApplication.nid || 'N/A', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .884-.5 2-2 2h4c-1.5 0-2-1.116-2-2z' },
-                      { label: 'Address', value: selectedApplication.address || 'N/A', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' },
-                      { label: 'Last Updated', value: selectedApplication.updatedAt ? new Date(selectedApplication.updatedAt).toLocaleDateString() : 'N/A', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
-                    ].map((item) => (
-                      <div key={item.label} className="p-4 bg-white dark:bg-brand-white/[0.02] rounded-xl border border-gray-100 dark:border-brand-white/5 hover:border-blue-200 dark:hover:border-brand-white/10 transition-colors">
-                        <div className="flex items-start space-x-3">
-                          <div className="p-2 bg-blue-50 dark:bg-brand-white/5 rounded-lg text-blue-500 dark:text-brand-white/60">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-gray-500 dark:text-brand-white/40 mb-1">{item.label}</p>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-brand-white break-all">{item.value}</p>
+                      { label: 'Email Address', value: selectedApplication.email, icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', color: 'from-blue-500 to-cyan-500' },
+                      { label: 'National ID', value: selectedApplication.nid || 'N/A', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .884-.5 2-2 2h4c-1.5 0-2-1.116-2-2z', color: 'from-purple-500 to-pink-500' },
+                      { label: 'Address', value: selectedApplication.address || 'N/A', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z', color: 'from-green-500 to-emerald-500' },
+                      { label: 'Last Updated', value: selectedApplication.updatedAt ? new Date(selectedApplication.updatedAt).toLocaleDateString() : 'N/A', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', color: 'from-orange-500 to-red-500' },
+                    ].map((item, index) => (
+                      <div key={item.label} className={`group animate-stagger delay-${index * 75}`}>
+                        <div className="relative h-full">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`}></div>
+                          <div className="relative h-full p-5 bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-brand-white/[0.08] dark:to-brand-white/[0.02] rounded-2xl border border-gray-200/50 dark:border-brand-white/10 hover-lift backdrop-blur-sm">
+                            <div className="flex items-start space-x-3">
+                              <div className={`p-3 bg-gradient-to-br ${item.color} rounded-lg text-white shadow-lg flex-shrink-0`}>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
+                                </svg>
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-brand-white/50 mb-1.5">{item.label}</p>
+                                <p className="text-sm font-semibold text-gray-900 dark:text-brand-white break-all line-clamp-2">{item.value}</p>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -540,56 +569,66 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               {/* Right Column: AI & Actions */}
-              <div className="space-y-6">
-                {/* AI Analysis Card */}
-                <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-brand-accent/10 dark:to-purple-900/20 rounded-2xl p-6 border border-purple-100 dark:border-brand-white/10 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full blur-2xl opacity-20"></div>
-                  
-                  <div className="flex items-center justify-between mb-4 relative z-10">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 bg-white dark:bg-brand-white/10 rounded-lg shadow-sm">
-                        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
+              <div className="space-y-6 animate-slideInRight">
+                {/* AI Analysis Card - Premium Design */}
+                <div className="group relative h-fit">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 dark:from-brand-accent/30 dark:to-purple-500/30 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative bg-gradient-to-br from-purple-50/80 to-blue-50/80 dark:from-purple-900/20 dark:to-blue-900/10 rounded-3xl p-7 border border-purple-200/50 dark:border-brand-white/10 backdrop-blur-xl overflow-hidden">
+                    <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full blur-3xl opacity-10"></div>
+                    
+                    <div className="flex items-center justify-between mb-5 relative z-10">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-3 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl shadow-lg">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-black text-gray-900 dark:text-brand-white text-lg tracking-tight">AI Analysis</h4>
+                          <p className="text-xs text-gray-500 dark:text-brand-white/40">Intelligent Review Summary</p>
+                        </div>
                       </div>
-                      <h4 className="font-bold text-gray-900 dark:text-brand-white">AI Analysis</h4>
-                    </div>
-                    <button
-                      onClick={async (e) => {
-                        e.preventDefault();
-                        if (!globalThis.confirm('Regenerate AI summary?')) return;
-                        try {
-                          const token = localStorage.getItem('token');
-                          const response = await axios.post(
-                            `${API_URL}/kyc/${selectedApplication._id}/regenerate-summary`,
-                            {},
-                            { headers: { Authorization: `Bearer ${token}` } }
-                          );
-                          if (response.data.success) {
-                            showNotification('success', 'Summary regenerated');
-                            closeModal();
-                            await fetchData();
+                      <button
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          if (!globalThis.confirm('Regenerate AI summary?')) return;
+                          try {
+                            const token = localStorage.getItem('token');
+                            const response = await axios.post(
+                              `${API_URL}/kyc/${selectedApplication._id}/regenerate-summary`,
+                              {},
+                              { headers: { Authorization: `Bearer ${token}` } }
+                            );
+                            if (response.data.success) {
+                              showNotification('success', 'Summary regenerated');
+                              closeModal();
+                              await fetchData();
+                            }
+                          } catch (error: any) {
+                            showNotification('error', error.response?.data?.message || 'Failed to regenerate');
                           }
-                        } catch (error: any) {
-                          showNotification('error', error.response?.data?.message || 'Failed to regenerate');
-                        }
-                      }}
-                      className="text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
-                    >
-                      Regenerate
-                    </button>
-                  </div>
-                  
-                  <div className="bg-white/60 dark:bg-brand-white/5 rounded-xl p-4 border border-white/50 dark:border-brand-white/5 backdrop-blur-sm relative z-10">
-                    <p className="text-sm leading-relaxed text-gray-700 dark:text-brand-white/80">
-                      {selectedApplication.aiSummary || 'No AI summary available for this application.'}
-                    </p>
+                        }}
+                        className="px-3 py-1.5 text-xs font-bold text-purple-600 dark:text-purple-300 bg-purple-100/50 dark:bg-purple-500/10 border border-purple-200/50 dark:border-purple-500/20 rounded-lg hover:bg-purple-200/50 dark:hover:bg-purple-500/20 transition-all duration-300"
+                      >
+                        ↻ Regenerate
+                      </button>
+                    </div>
+                    
+                    <div className="bg-white/60 dark:bg-brand-white/[0.08] rounded-2xl p-5 border border-white/50 dark:border-brand-white/10 backdrop-blur-sm relative z-10 max-h-60 overflow-y-auto">
+                      <p className="text-sm leading-relaxed text-gray-700 dark:text-brand-white/80 font-medium">
+                        {selectedApplication.aiSummary || <span className="text-gray-400 dark:text-brand-white/40 italic">No AI summary available for this application.</span>}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="bg-gray-50 dark:bg-brand-white/5 rounded-2xl p-6 border border-gray-100 dark:border-brand-white/5">
-                  <h4 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-brand-white/40 mb-4">Actions</h4>
+                {/* Action Buttons - Enhanced */}
+                <div className="bg-gradient-to-br from-gray-50/80 to-gray-100/50 dark:from-brand-white/[0.06] dark:to-brand-white/[0.02] rounded-3xl p-7 border border-gray-200/50 dark:border-brand-white/10 backdrop-blur-xl animate-fadeInUp delay-200">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <div className="w-1 h-6 bg-gradient-to-b from-brand-accent to-purple-500 rounded-full"></div>
+                    <h4 className="text-sm font-black uppercase tracking-wider text-gray-700 dark:text-brand-white/60">Review Actions</h4>
+                  </div>
+                  
                   <div className="space-y-3">
                     <button
                       onClick={() => {
@@ -597,12 +636,13 @@ const AdminDashboard: React.FC = () => {
                         closeModal();
                       }}
                       disabled={selectedApplication.status === 'approved'}
-                      className="w-full py-3 px-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+                      className="w-full group relative py-4 px-5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift flex items-center justify-center space-x-2 overflow-hidden"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                      <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span>Approve Application</span>
+                      <span className="relative z-10">Approve Application</span>
                     </button>
                     
                     <button
@@ -611,12 +651,13 @@ const AdminDashboard: React.FC = () => {
                         closeModal();
                       }}
                       disabled={selectedApplication.status === 'rejected'}
-                      className="w-full py-3 px-4 bg-white dark:bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+                      className="w-full group relative py-4 px-5 bg-white dark:bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift flex items-center justify-center space-x-2 overflow-hidden"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="absolute inset-0 bg-red-500/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                      <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
-                      <span>Reject Application</span>
+                      <span className="relative z-10">Reject Application</span>
                     </button>
                   </div>
                 </div>
