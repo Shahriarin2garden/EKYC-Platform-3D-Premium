@@ -136,7 +136,7 @@ function KycForm(): JSX.Element {
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Enhanced Header Section */}
-        <div className="mb-12 text-center">
+        <div className="mb-12 text-center animate-fadeInUp">
           <div className="relative inline-block mb-6">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 dark:from-brand-accent dark:to-purple-500 rounded-3xl blur-2xl opacity-20 dark:opacity-40 animate-pulse"></div>
             <h1 className="relative text-5xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-brand-white bg-clip-text">
@@ -149,7 +149,7 @@ function KycForm(): JSX.Element {
         </div>
 
         {/* Form Card with Premium 3D Design */}
-        <div className="card-3d p-10 md:p-14">
+        <div className="card-3d p-10 md:p-14 animate-fadeInUp delay-100">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Name Field */}
             <InputField
@@ -239,7 +239,7 @@ function KycForm(): JSX.Element {
           </form>
 
           {/* Enhanced Security Badge */}
-          <div className="mt-12 pt-10 border-t border-gray-200 dark:border-brand-white/10">
+          <div className="mt-12 pt-10 border-t border-gray-200 dark:border-brand-white/10 animate-fadeInUp delay-200">
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 rounded-2xl blur-xl opacity-0 dark:opacity-30 group-hover:opacity-40 dark:group-hover:opacity-50 transition-opacity duration-500"></div>
               <div className="relative flex items-center justify-center gap-5 px-8 py-6 rounded-2xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-brand-white/5 dark:to-brand-white/10 backdrop-blur-xl border border-gray-200 dark:border-brand-white/10">

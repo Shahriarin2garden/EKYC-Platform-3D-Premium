@@ -228,6 +228,18 @@ const AdminDashboard: React.FC = () => {
     }
   }, []);
 
+  const getNotificationClass = useCallback((type: string) => {
+    const baseClass = 'fixed top-4 right-4 z-50 px-6 py-4 rounded-lg border flex items-center space-x-3';
+    switch (type) {
+      case 'success':
+        return `${baseClass} bg-green-500/10 border-green-500/20 text-green-400`;
+      case 'error':
+        return `${baseClass} bg-red-500/10 border-red-500/20 text-red-400`;
+      default:
+        return `${baseClass} bg-blue-500/10 border-blue-500/20 text-blue-400`;
+    }
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center">
@@ -243,11 +255,7 @@ const AdminDashboard: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-brand-white font-sans">
       {/* Notification Toast */}
       {notification && (
-        <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg border flex items-center space-x-3 ${
-          notification.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
-          notification.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
-          'bg-blue-500/10 border-blue-500/20 text-blue-400'
-        }`}>
+        <div className={getNotificationClass(notification.type)}>
           <p className="font-medium">{notification.message}</p>
           <button onClick={() => setNotification(null)} className="hover:opacity-70">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -438,75 +446,117 @@ const AdminDashboard: React.FC = () => {
 
       {/* Details Modal */}
       {showDetailsModal && selectedApplication && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          onClick={(e) => {
-            // Close modal when clicking backdrop
-            if (e.target === e.currentTarget) {
-              console.log('Modal backdrop clicked');
-              closeModal();
-            }
-          }}
-        >
-          <div className="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-brand-gray/30 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-sm px-6 py-4 border-b border-gray-200 dark:border-brand-gray/20 flex justify-between items-center z-10">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-brand-white">Application Details</h3>
+        <>
+          <div 
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md transition-opacity duration-300"
+            onClick={closeModal}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') closeModal();
+            }}
+            role="none"
+          />
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) closeModal();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') closeModal();
+            }}
+            role="none"
+          >
+            <dialog 
+              open
+              className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-brand-gray/20 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scaleIn relative flex flex-col" 
+              aria-labelledby="modal-title"
+            >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-xl px-8 py-6 border-b border-gray-200 dark:border-brand-gray/20 flex justify-between items-start z-20">
+              <div>
+                <div className="flex items-center space-x-4 mb-2">
+                  <h3 id="modal-title" className="text-2xl font-bold text-gray-900 dark:text-brand-white">Application Details</h3>
+                  <span className={`px-4 py-1.5 inline-flex text-sm font-bold rounded-full border ${getStatusBadgeColor(selectedApplication.status)} shadow-sm`}>
+                    {selectedApplication.status.replace('_', ' ').toUpperCase()}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-brand-white/40 font-mono">ID: {selectedApplication._id}</p>
+              </div>
               <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  closeModal();
-                }} 
-                className="text-brand-white/50 hover:text-brand-white transition-colors cursor-pointer"
-                type="button"
-                style={{ pointerEvents: 'auto' }}
+                onClick={closeModal}
+                className="p-2 rounded-full bg-gray-100 dark:bg-brand-white/5 text-gray-500 dark:text-brand-white/50 hover:bg-gray-200 dark:hover:bg-brand-white/10 hover:text-gray-900 dark:hover:text-brand-white transition-all duration-200"
               >
-                <svg className="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             
-            <div className="p-6 space-y-6">
-              {/* Status Badge */}
-              <div className="flex items-center justify-between">
-                <span className={`px-3 py-1 inline-flex text-sm font-bold rounded-full border ${getStatusBadgeColor(selectedApplication.status)}`}>
-                  {selectedApplication.status.replace('_', ' ').toUpperCase()}
-                </span>
-                <span className="text-xs font-mono text-brand-white/30">ID: {selectedApplication._id}</span>
-              </div>
-
-              {/* Personal Information */}
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-brand-white/50 mb-4 border-b border-brand-gray/20 pb-2">Personal Information</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[
-                    { label: 'Full Name', value: selectedApplication.name },
-                    { label: 'Email Address', value: selectedApplication.email },
-                    { label: 'National ID', value: selectedApplication.nid || 'N/A' },
-                    { label: 'Occupation', value: selectedApplication.occupation || 'N/A' },
-                  ].map((item) => (
-                    <div key={item.label}>
-                      <p className="text-xs text-brand-white/50 mb-1">{item.label}</p>
-                      <p className="text-sm font-medium text-brand-white">{item.value}</p>
+            <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column: Personal Info */}
+              <div className="lg:col-span-2 space-y-8">
+                {/* Profile Header */}
+                <div className="flex items-center space-x-6 p-6 bg-gray-50 dark:bg-brand-white/5 rounded-2xl border border-gray-100 dark:border-brand-white/5">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                    {selectedApplication.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-gray-900 dark:text-brand-white mb-1">{selectedApplication.name}</h4>
+                    <p className="text-gray-500 dark:text-brand-white/60">{selectedApplication.occupation || 'No occupation listed'}</p>
+                    <div className="flex items-center mt-2 text-sm text-gray-500 dark:text-brand-white/40">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Submitted on {new Date(selectedApplication.submittedAt).toLocaleDateString()}
                     </div>
-                  ))}
-                  <div className="col-span-full">
-                    <p className="text-xs text-brand-white/50 mb-1">Address</p>
-                    <p className="text-sm font-medium text-brand-white">{selectedApplication.address || 'N/A'}</p>
+                  </div>
+                </div>
+
+                {/* Detailed Info Grid */}
+                <div>
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-brand-white/40 mb-4">Personal Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      { label: 'Email Address', value: selectedApplication.email, icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+                      { label: 'National ID', value: selectedApplication.nid || 'N/A', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .884-.5 2-2 2h4c-1.5 0-2-1.116-2-2z' },
+                      { label: 'Address', value: selectedApplication.address || 'N/A', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z' },
+                      { label: 'Last Updated', value: selectedApplication.updatedAt ? new Date(selectedApplication.updatedAt).toLocaleDateString() : 'N/A', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
+                    ].map((item) => (
+                      <div key={item.label} className="p-4 bg-white dark:bg-brand-white/[0.02] rounded-xl border border-gray-100 dark:border-brand-white/5 hover:border-blue-200 dark:hover:border-brand-white/10 transition-colors">
+                        <div className="flex items-start space-x-3">
+                          <div className="p-2 bg-blue-50 dark:bg-brand-white/5 rounded-lg text-blue-500 dark:text-brand-white/60">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium text-gray-500 dark:text-brand-white/40 mb-1">{item.label}</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-brand-white break-all">{item.value}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* AI Summary */}
-              {selectedApplication.aiSummary && (
-                <div>
-                  <div className="flex items-center justify-between mb-4 border-b border-brand-gray/20 pb-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-brand-white/50">AI Analysis</h4>
+              {/* Right Column: AI & Actions */}
+              <div className="space-y-6">
+                {/* AI Analysis Card */}
+                <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-brand-accent/10 dark:to-purple-900/20 rounded-2xl p-6 border border-purple-100 dark:border-brand-white/10 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full blur-2xl opacity-20"></div>
+                  
+                  <div className="flex items-center justify-between mb-4 relative z-10">
+                    <div className="flex items-center space-x-2">
+                      <div className="p-1.5 bg-white dark:bg-brand-white/10 rounded-lg shadow-sm">
+                        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <h4 className="font-bold text-gray-900 dark:text-brand-white">AI Analysis</h4>
+                    </div>
                     <button
                       onClick={async (e) => {
                         e.preventDefault();
-                        e.stopPropagation();
                         if (!globalThis.confirm('Regenerate AI summary?')) return;
                         try {
                           const token = localStorage.getItem('token');
@@ -521,72 +571,60 @@ const AdminDashboard: React.FC = () => {
                             await fetchData();
                           }
                         } catch (error: any) {
-                          console.error('Failed to regenerate summary:', error);
                           showNotification('error', error.response?.data?.message || 'Failed to regenerate');
                         }
                       }}
-                      className="text-xs text-brand-accent hover:text-brand-white transition-colors cursor-pointer"
-                      type="button"
-                      style={{ pointerEvents: 'auto' }}
+                      className="text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
                     >
                       Regenerate
                     </button>
                   </div>
-                  <div className="bg-brand-white/5 rounded-lg p-4 border border-brand-white/10">
-                    <p className="text-sm leading-relaxed text-brand-white/80">{selectedApplication.aiSummary}</p>
+                  
+                  <div className="bg-white/60 dark:bg-brand-white/5 rounded-xl p-4 border border-white/50 dark:border-brand-white/5 backdrop-blur-sm relative z-10">
+                    <p className="text-sm leading-relaxed text-gray-700 dark:text-brand-white/80">
+                      {selectedApplication.aiSummary || 'No AI summary available for this application.'}
+                    </p>
                   </div>
                 </div>
-              )}
 
-              {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-brand-gray/20">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Modal Approve clicked for:', selectedApplication._id);
-                    updateStatus(selectedApplication._id, 'approved');
-                    closeModal();
-                  }}
-                  disabled={selectedApplication.status === 'approved'}
-                  className="px-4 py-2 bg-green-500/10 text-green-400 border border-green-500/20 rounded-lg hover:bg-green-500/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-bold cursor-pointer"
-                  type="button"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Modal Reject clicked for:', selectedApplication._id);
-                    updateStatus(selectedApplication._id, 'rejected');
-                    closeModal();
-                  }}
-                  disabled={selectedApplication.status === 'rejected'}
-                  className="px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg hover:bg-red-500/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-bold cursor-pointer"
-                  type="button"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Modal Close clicked');
-                    closeModal();
-                  }}
-                  className="px-4 py-2 bg-brand-white/5 text-brand-white border border-brand-white/10 rounded-lg hover:bg-brand-white/10 transition-colors text-sm font-bold cursor-pointer"
-                  type="button"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  Close
-                </button>
+                {/* Action Buttons */}
+                <div className="bg-gray-50 dark:bg-brand-white/5 rounded-2xl p-6 border border-gray-100 dark:border-brand-white/5">
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-brand-white/40 mb-4">Actions</h4>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => {
+                        updateStatus(selectedApplication._id, 'approved');
+                        closeModal();
+                      }}
+                      disabled={selectedApplication.status === 'approved'}
+                      className="w-full py-3 px-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Approve Application</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        updateStatus(selectedApplication._id, 'rejected');
+                        closeModal();
+                      }}
+                      disabled={selectedApplication.status === 'rejected'}
+                      className="w-full py-3 px-4 bg-white dark:bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span>Reject Application</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+            </dialog>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
