@@ -58,3 +58,27 @@ backend/pdfs/*.pdf
 # Sonar
 .scannerwork/
 
+# ===== EXCLUDE ALL .md AND .sh FILES EXCEPT THOSE REFERENCED IN README =====
+
+# Exclude all markdown files
+*.md
+
+# Re-include markdown files referenced in README.md and documentation
+!README.md
+!DOCKER_GUIDE.md
+!QUICKSTART_MONGODB.md
+!TESTING.md
+!TEST_COMMANDS.md
+!ARCHITECTURE.md
+!JWT_WORKFLOW_DOCUMENTATION.md
+!backend/RABBITMQ_SETUP.md
+!backend/LOGGING_GUIDE.md
+!frontend/DESIGN_GUIDE.md
+!LICENSE
+
+# Exclude all shell scripts
+*.sh
+
+# Re-include shell scripts referenced in README.md
+!docker-start.sh
+
