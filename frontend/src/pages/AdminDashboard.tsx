@@ -467,14 +467,14 @@ const AdminDashboard: React.FC = () => {
           >
             <dialog 
               open
-              className="bg-gradient-to-b dark:from-brand-dark/98 dark:to-brand-darker/98 from-gray-50 to-white border border-gray-200 dark:border-brand-gray/20 rounded-3xl max-w-5xl w-full max-h-[95vh] overflow-y-auto shadow-2xl animate-scaleIn relative flex flex-col backdrop-blur-xl" 
+              className="bg-gradient-to-b from-gray-900/95 via-slate-800/95 to-black/98 border border-gray-200 dark:border-brand-gray/20 rounded-3xl max-w-5xl w-full max-h-[95vh] overflow-y-auto shadow-2xl animate-scaleIn relative flex flex-col backdrop-blur-xl" 
               aria-labelledby="modal-title"
             >
             {/* Decorative gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/5 via-transparent to-purple-500/5 dark:from-brand-accent/10 dark:to-purple-500/10 pointer-events-none rounded-3xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/10 via-transparent to-purple-500/5 pointer-events-none rounded-3xl"></div>
 
             {/* Modal Header with enhanced styling */}
-            <div className="sticky top-0 bg-gradient-to-r from-white/98 to-gray-50/95 dark:from-brand-dark/98 dark:via-brand-dark/95 dark:to-brand-darker/95 backdrop-blur-xl px-8 py-6 border-b border-gray-200 dark:border-brand-white/5 flex justify-between items-start z-20 relative">
+            <div className="sticky top-0 bg-gradient-to-r from-gray-900/95 via-slate-800/95 to-gray-900/95 backdrop-blur-xl px-8 py-6 border-b border-brand-white/10 flex justify-between items-start z-20 relative">
               <div className="space-y-3">
                 <div className="flex items-center space-x-4">
                   <h3 id="modal-title" className="text-3xl font-black text-gray-900 dark:text-brand-white tracking-tight">Application Details</h3>
@@ -505,8 +505,8 @@ const AdminDashboard: React.FC = () => {
               <div className="lg:col-span-2 space-y-8 animate-slideInLeft">
                 {/* Profile Header - Enhanced */}
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-brand-accent/20 dark:to-purple-500/20 rounded-3xl blur-2xl transition-all duration-500 group-hover:opacity-100 opacity-0"></div>
-                  <div className="relative flex items-center space-x-6 p-8 bg-gradient-to-br from-white to-gray-50/50 dark:from-brand-white/[0.08] dark:to-brand-white/[0.03] rounded-3xl border border-gray-200/50 dark:border-brand-white/10 backdrop-blur-xl hover-lift">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl blur-2xl transition-all duration-500 group-hover:opacity-100 opacity-0"></div>
+                  <div className="relative flex items-center space-x-6 p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-3xl border border-brand-white/15 backdrop-blur-xl hover-lift">
                     <div className="relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl blur-lg opacity-75"></div>
                       <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-2xl">
@@ -536,7 +536,7 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-4 animate-fadeInUp delay-100">
                   <div className="flex items-center space-x-2 mb-6">
                     <div className="w-1 h-6 bg-gradient-to-b from-brand-accent to-purple-500 rounded-full"></div>
-                    <h4 className="text-sm font-black uppercase tracking-wider text-gray-700 dark:text-brand-white/60">Personal Information</h4>
+                    <h4 className="text-sm font-black uppercase tracking-wider text-brand-white/70">Personal Information</h4>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
@@ -548,7 +548,7 @@ const AdminDashboard: React.FC = () => {
                       <div key={item.label} className={`group animate-stagger delay-${index * 75}`}>
                         <div className="relative h-full">
                           <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`}></div>
-                          <div className="relative h-full p-5 bg-gradient-to-br from-white/80 to-gray-50/50 dark:from-brand-white/[0.08] dark:to-brand-white/[0.02] rounded-2xl border border-gray-200/50 dark:border-brand-white/10 hover-lift backdrop-blur-sm">
+                          <div className="relative h-full p-5 bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-2xl border border-brand-white/15 hover-lift backdrop-blur-sm">
                             <div className="flex items-start space-x-3">
                               <div className={`p-3 bg-gradient-to-br ${item.color} rounded-lg text-white shadow-lg flex-shrink-0`}>
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -556,8 +556,8 @@ const AdminDashboard: React.FC = () => {
                                 </svg>
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-brand-white/50 mb-1.5">{item.label}</p>
-                                <p className="text-sm font-semibold text-gray-900 dark:text-brand-white break-all line-clamp-2">{item.value}</p>
+                                <p className="text-xs font-bold uppercase tracking-wider text-brand-white/60 mb-1.5">{item.label}</p>
+                                <p className="text-sm font-semibold text-brand-white break-all line-clamp-2">{item.value}</p>
                               </div>
                             </div>
                           </div>
@@ -572,8 +572,8 @@ const AdminDashboard: React.FC = () => {
               <div className="lg:col-span-2 space-y-6 animate-slideInRight flex flex-col">
                 {/* AI Analysis Card - Premium Design */}
                 <div className="group relative h-fit">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 dark:from-brand-accent/30 dark:to-purple-500/30 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="relative bg-gradient-to-br from-purple-50/80 to-blue-50/80 dark:from-purple-900/20 dark:to-blue-900/10 rounded-3xl p-7 border border-purple-200/50 dark:border-brand-white/10 backdrop-blur-xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-3xl p-7 border border-brand-white/15 backdrop-blur-xl overflow-hidden">
                     <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full blur-3xl opacity-10"></div>
                     
                     <div className="flex items-center justify-between mb-5 relative z-10">
@@ -584,8 +584,8 @@ const AdminDashboard: React.FC = () => {
                           </svg>
                         </div>
                         <div>
-                          <h4 className="font-black text-gray-900 dark:text-brand-white text-lg tracking-tight">AI Analysis</h4>
-                          <p className="text-xs text-gray-500 dark:text-brand-white/40">Intelligent Review Summary</p>
+                          <h4 className="font-black text-brand-white text-lg tracking-tight">AI Analysis</h4>
+                          <p className="text-xs text-brand-white/50">Intelligent Review Summary</p>
                         </div>
                       </div>
                       <button
@@ -614,19 +614,19 @@ const AdminDashboard: React.FC = () => {
                       </button>
                     </div>
                     
-                    <div className="bg-white/60 dark:bg-brand-white/[0.08] rounded-2xl p-5 border border-white/50 dark:border-brand-white/10 backdrop-blur-sm relative z-10 max-h-60 overflow-y-auto">
-                      <p className="text-sm leading-relaxed text-gray-700 dark:text-brand-white/80 font-medium">
-                        {selectedApplication.aiSummary || <span className="text-gray-400 dark:text-brand-white/40 italic">No AI summary available for this application.</span>}
+                    <div className="bg-slate-700/40 rounded-2xl p-5 border border-brand-white/10 backdrop-blur-sm relative z-10 max-h-60 overflow-y-auto">
+                      <p className="text-sm leading-relaxed text-brand-white/90 font-medium">
+                        {selectedApplication.aiSummary || <span className="text-brand-white/50 italic">No AI summary available for this application.</span>}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Action Buttons - Enhanced Horizontal Layout */}
-                <div className="mt-auto bg-gradient-to-br from-gray-50/80 to-gray-100/50 dark:from-brand-white/[0.06] dark:to-brand-white/[0.02] rounded-3xl p-7 border border-gray-200/50 dark:border-brand-white/10 backdrop-blur-xl animate-fadeInUp delay-200">
+                <div className="mt-auto bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-3xl p-7 border border-brand-white/15 backdrop-blur-xl animate-fadeInUp delay-200">
                   <div className="flex items-center space-x-2 mb-6">
                     <div className="w-1 h-6 bg-gradient-to-b from-brand-accent to-purple-500 rounded-full"></div>
-                    <h4 className="text-sm font-black uppercase tracking-wider text-gray-700 dark:text-brand-white/60">Review Actions</h4>
+                    <h4 className="text-sm font-black uppercase tracking-wider text-brand-white/70">Review Actions</h4>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4 w-full">
