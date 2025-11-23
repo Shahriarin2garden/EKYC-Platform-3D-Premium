@@ -622,27 +622,28 @@ const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons - Enhanced */}
+                {/* Action Buttons - Enhanced Horizontal Layout */}
                 <div className="bg-gradient-to-br from-gray-50/80 to-gray-100/50 dark:from-brand-white/[0.06] dark:to-brand-white/[0.02] rounded-3xl p-7 border border-gray-200/50 dark:border-brand-white/10 backdrop-blur-xl animate-fadeInUp delay-200">
                   <div className="flex items-center space-x-2 mb-6">
                     <div className="w-1 h-6 bg-gradient-to-b from-brand-accent to-purple-500 rounded-full"></div>
                     <h4 className="text-sm font-black uppercase tracking-wider text-gray-700 dark:text-brand-white/60">Review Actions</h4>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <button
                       onClick={() => {
                         updateStatus(selectedApplication._id, 'approved');
                         closeModal();
                       }}
                       disabled={selectedApplication.status === 'approved'}
-                      className="w-full group relative py-4 px-5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift flex items-center justify-center space-x-2 overflow-hidden"
+                      className="group relative py-4 px-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift flex items-center justify-center space-x-2 overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                       <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="relative z-10">Approve Application</span>
+                      <span className="relative z-10 hidden sm:inline">Approve</span>
+                      <span className="relative z-10 sm:hidden">OK</span>
                     </button>
                     
                     <button
@@ -651,13 +652,14 @@ const AdminDashboard: React.FC = () => {
                         closeModal();
                       }}
                       disabled={selectedApplication.status === 'rejected'}
-                      className="w-full group relative py-4 px-5 bg-white dark:bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift flex items-center justify-center space-x-2 overflow-hidden"
+                      className="group relative py-4 px-4 bg-white dark:bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift flex items-center justify-center space-x-2 overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-red-500/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                       <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
-                      <span className="relative z-10">Reject Application</span>
+                      <span className="relative z-10 hidden sm:inline">Reject</span>
+                      <span className="relative z-10 sm:hidden">No</span>
                     </button>
                   </div>
                 </div>
